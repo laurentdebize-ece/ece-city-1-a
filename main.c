@@ -61,8 +61,6 @@ void Hud(HUD hud[6],int tailleW,int tailleH,int ClickGauche,int mouseX,int mouse
             }
         }
     }
-
-
 }
 
 int main() {
