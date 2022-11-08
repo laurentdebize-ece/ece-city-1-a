@@ -14,7 +14,7 @@
 
 typedef struct {
     double x,y;
-    int etat; //Construction present dessus (0 rien, 1 route, 2 centrale, 3 chateau d'eau, 4 terrain vague?)
+    int etat; //Construction present dessus (0 rien, 1 route, 2 centrale, 3 chateau d'eau, 4 terrain vague? )
 
 }Map;
 

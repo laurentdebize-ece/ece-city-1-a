@@ -136,12 +136,6 @@ int main() {
             al_draw_line(tailleW + i * W, tailleH, tailleW + i * W, height - tailleH, black, 1);
         }
 
-        for (int i = 0; i < 45; i++) {
-            for (int j = 0; j < 30; j++) {
-                //al_draw_textf(gameFont, white, tailleW + W / 2 + W * i, tailleH + H / 2 + H * j, 1, "%d", j);
-                //al_draw_circle(tailleW+tailleW/2+tailleW*i,tailleH+tailleH/2+tailleH*j,30,white,3);
-            }
-        }
         al_flip_display();
         al_clear_to_color(al_map_rgb(0,0,255));
 
