@@ -31,62 +31,38 @@ int temps(Map map[45][35],int evolution,int time){
     return evolution;
 }
 
-void dessinerMap(Vector3 mapPosition,int i,int j){
+void dessinerMap(Vector2 mapPosition,int i,int j){
 
-    //DrawCube(carte,carteSize.x,carteSize.y,carteSize.z,GRAY);
-    DrawCube(mapPosition, tailleCaseLargeur, 0.0f, tailleCaseHauteur, GRAY);
+    DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur, tailleCaseHauteur, GRAY);
 
 }
 
-void collisionMap(Map map[45][35],HUD hud[6],Ray ray,Vector3 mapPosition,Vector3 mapSize,RayCollision collision,int i, int j){ //Collision Souris Map
-    collision = GetRayCollisionBox(ray, (BoundingBox) {
-            (Vector3) {mapPosition.x - mapSize.x / 2, 0, mapPosition.z - mapSize.z / 2},
-            (Vector3) {mapPosition.x + mapSize.x / 2, 0, mapPosition.z + mapSize.z / 2}});
-    if (collision.hit != 0) {
-        DrawCube(mapPosition, tailleCaseLargeur, 0.0f, tailleCaseHauteur, RED);
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            for (int k = 0; k < 6; k++) {
-                if (hud[k].etat == 1 && map[i][j].occupe == 0 && map[i + 2][j + 2].occupe == 0 &&
-                    map[i][j + 2].occupe == 0 && map[i + 2][j].occupe == 0) {
-                    map[i][j].etat = k;
-                    map[i][j].occupe = 1;
-                    if (hud[1].etat == 1) {
-                        for (int a = 0; a < 3; a++) {
-                            for (int b = 0; b < 3; b++) {
-                                map[i + a][j + b].etat = 1;
-                                map[i + a][j + b].occupe = 1;
-                            }
-                        }
-                    }
-
-                }
-            }
-
-        }
-    }
-}
-
-void placementBatiment(Map map[45][35],Vector3 mapPosition,int i,int j){
+void placementBatiment(Map map[45][35],Vector2 mapPosition,int i,int j){
     if (map[i][j].etat == 0) {  //Quoi faire en fonction de l'etat de la case (voir map.h)
-        DrawCube(mapPosition, tailleCaseLargeur, 0.0f, tailleCaseHauteur, BLACK);
+        DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur, tailleCaseHauteur, BLACK);
     }
     else if (map[i][j].etat == 1) { //Evolution des maisons
         if (map[i][j].stade == 0) {
-            DrawCube(mapPosition, tailleCaseLargeur * 3 / 2, 2.0f, tailleCaseHauteur / 1.2 * 3 / 2, RED);
+            DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur * 2.5 , tailleCaseHauteur * 2.5  , RED);
         }
         if (map[i][j].stade == 1) {
-            DrawCube(mapPosition, tailleCaseLargeur / 1.2 * 3 / 2, 20.0f, tailleCaseHauteur / 1.2 * 3 / 2,
+            DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur * 2.5  , tailleCaseHauteur * 2.5  ,
                      GREEN);
         }
-        if (map[i][j].stade >= 2) {
-            DrawCube(mapPosition, tailleCaseLargeur / 1.2 * 3 / 2, 200.0f, tailleCaseHauteur / 1.2 * 3 / 2,
+        if (map[i][j].stade == 2) {
+            DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur * 2.5  , tailleCaseHauteur * 2.5  ,
+                     YELLOW);
+        }
+        if (map[i][j].stade >= 3) {
+            mapPosition.y = 50;
+            DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur * 2.5, tailleCaseHauteur * 2.5,
                      BLUE);
         }
 
     } else if (map[i][j].etat == 2) {
-        DrawCube(mapPosition, tailleCaseLargeur, 0.0f, tailleCaseHauteur, BLUE);
+        DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur * 3.5, tailleCaseHauteur * 5.5, YELLOW);
     } else if (map[i][j].etat == 3) {
-        DrawCube(mapPosition, tailleCaseLargeur, 0.0f, tailleCaseHauteur, GREEN);
+        DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur, tailleCaseHauteur, BLUE);
     }
 }
 
@@ -103,13 +79,46 @@ void HUDcollision(HUD hud[6],Rectangle HUD,Vector2 mousePosition,int collisionHU
     }
 }
 
+void MapCollision(Map map[45][35],HUD hud[6],Vector2 mapPosition,Vector2 mapSize,Vector2 mousePosition,Rectangle MAP,int collisionMAP,int i,int j){
+    collisionMAP = CheckCollisionPointRec(mousePosition, MAP);
+    if (collisionMAP != 0) {
+        DrawRectangle(mapPosition.x,mapPosition.y, tailleCaseLargeur,tailleCaseHauteur, RED);
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            for (int k = 0; k < 6; k++) {
+                if (hud[1].etat == 1 && map[i][j].occupe == 0 && map[i - 1][j + 1].occupe == 0 &&
+                    map[i - 1][j - 1].occupe == 0 && map[i + 1][j + 1].occupe == 0 && map[i + 1][j - 1].occupe == 0) {
+                    for (int a = -1; a < 2; a++) {
+                        for (int b = -1; b < 2; b++) {
+                            map[i ][j ].etat = 1;
+                            map[i + a][j + b].occupe = 1;
+                        }
+                    }
+                }
+                if (hud[2].etat == 1 && map[i][j].occupe == 0 && map[i - 1][j + 1].occupe == 0 &&
+                    map[i - 1][j - 1].occupe == 0 && map[i + 1][j + 1].occupe == 0 && map[i + 1][j - 1].occupe == 0) {
+                    for (int a = -2; a < 3; a++) {
+                        for (int b = -3; b < 4; b++) {
+                            map[i ][j ].etat = 2;
+                            map[i + a][j + b].occupe = 1;
+                        }
+                    }
+
+
+
+                }
+            }
+
+        }
+    }
+}
+
 void affichageInfo(int time){ //Temps, argent etc...
     DrawRectangleLines(10, 10, 100, 20, BLUE);
     DrawText(TextFormat("Time: %d", (time)), 20, 15, 10, BLACK);
 }
 
 
-void boucle(Map map[45][35],HUD hud[6],Camera3D camera,Vector3 mapPosition,Vector3 mapSize,Ray ray,Vector2 mousePosition,Rectangle HUD,RayCollision collision,float x, float y, float z,int evolution,int time,int collisionHUD) {
+void boucle(Map map[45][35],HUD hud[6],Vector2 mapPosition,Vector2 mapSize,Ray ray,Vector2 mousePosition,Rectangle HUD,Rectangle MAP,RayCollision collision,float x, float y, float z,int evolution,int time,int collisionHUD,int collisionMAP) {
 
     while (!WindowShouldClose()) {
         time = GetTime();
@@ -118,48 +127,33 @@ void boucle(Map map[45][35],HUD hud[6],Camera3D camera,Vector3 mapPosition,Vecto
             for (int j = 0; j < 35; j++) {
                 if (evolution == 1 && map[i][j].stade < 3 && map[i][j].etat == 1) {
                     map[i][j].stade++;
-                    printf("%d\n", map[i][j].stade);
                 }
 
             }
         }
         evolution = 0;
 
-        UpdateCamera(&camera); // Système de camera de base de Raylib
-        ray = GetMouseRay(GetMousePosition(), camera);
         mousePosition = GetMousePosition();
         BeginDrawing();
 
         ClearBackground(RAYWHITE); //Fond Blanc
 
-        if (IsKeyDown(KEY_LEFT)) { //Deplacement de la camera aussi possible avec ALt + mouseWheelPressed
-            x--;
-            camera.target = (Vector3) {x, y, z};
-        }
-        if (IsKeyDown(KEY_RIGHT)) {
-            x++;
-            camera.target = (Vector3) {x, y, z};
-        }
-        if (IsKeyDown(KEY_UP)) {
-            z--;
-            camera.target = (Vector3) {x, y, z};
-        }
-        if (IsKeyDown(KEY_DOWN)) {
-            z++;
-            camera.target = (Vector3) {x, y, z};
-        }
 
-        BeginMode3D(camera);
+
+
+
         for (int i = 0; i < 45; i++) {
             for (int j = 0; j < 35; j++) {
-                mapPosition.x = i * tailleCaseLargeur; //Coordonnée de la map
-                mapPosition.z = j * tailleCaseHauteur;
+                mapPosition.x = i * tailleCaseLargeur + tailleCaseLargeur*11; //Coordonnée de la map
+                mapPosition.y = j * tailleCaseHauteur + tailleCaseHauteur*6;
+                MAP.x = i * tailleCaseLargeur + tailleCaseLargeur*11; //Coordonnée de la map
+                MAP.y = j * tailleCaseHauteur + tailleCaseHauteur*6;
                 dessinerMap(mapPosition,i,j);
-                collisionMap(map,hud,ray,mapPosition,mapSize,collision,i,j);
+                MapCollision(map,hud,mapPosition,mapSize,mousePosition,MAP,collisionMAP,i,j);
                 placementBatiment(map,mapPosition,i,j);
             }
         }
-        EndMode3D();
+
 
         for (int i = 0; i < 6; i++) { //Dessin du HUD
             HUD.y = 50 + 50 * i;
@@ -188,29 +182,23 @@ int main(){
     int evolution = 0;
     int time;
     int collisionHUD;
+    int collisionMAP;
 
-    Camera3D camera = { 0 };
-    camera.position = (Vector3){ x, y, z };
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
-    camera.up = (Vector3){ 0.0f, 5.0f, 0.0f };
-    camera.fovy = 45.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
-
-    Vector3 mapPosition = { 0.0f, 0.0f, 0.0f };
-    Vector3 mapSize = { tailleCaseLargeur, 0.0f, tailleCaseHauteur };
+    Vector2 mapPosition = { 0.0f, 0.0f };
+    Vector2 mapSize = { tailleCaseLargeur,  tailleCaseHauteur };
 
     Ray ray = { 0 };
     Vector2 mousePosition = {0};
-    Rectangle HUD = {10,50}; // Pour la collision avec le HUD
+    Rectangle HUD = {10,50};
+    Rectangle MAP = {tailleCaseLargeur*3,tailleCaseHauteur*3};// Pour la collision avec le HUD
+    MAP.height=tailleCaseHauteur;
+    MAP.width=tailleCaseLargeur;
     HUD.height=50;
     HUD.width=50;
     RayCollision collision = { 0 };
 
-
-    SetCameraMode(camera, CAMERA_FREE);
-
     SetTargetFPS(60);
-    boucle(map,hud,camera,mapPosition,mapSize,ray,mousePosition,HUD,collision,x,y,z,evolution,time,collisionHUD);
+    boucle(map,hud,mapPosition,mapSize,ray,mousePosition,HUD,MAP,collision,x,y,z,evolution,time,collisionHUD,collisionMAP);
 
 
 
