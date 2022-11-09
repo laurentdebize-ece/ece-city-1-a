@@ -20,6 +20,9 @@ int main(){
     SetTargetFPS(60);
 
     //Fonction executé
+
+    //affichermenu();
+
     boucle(map,hud,mapPosition,mapSize,mousePosition,evolution,time,collisionHUD,collisionMAP);
 
 }
