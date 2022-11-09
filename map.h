@@ -4,13 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "raylib.h"
 #include <math.h>
+
+#include "raylib.h"
+#include "boiteoutil.h"
 
 #define LARGUEUR 1024
 #define HAUTEUR 678
-#define tailleCaseHauteur 15//Distance entre le centre de deux carré adjacent de la map
-#define tailleCaseLargeur 15 //Distance entre le centre de deux carré adjacent de la map
+#define LARGEUR1CASE 15//Distance entre le centre de deux carré adjacent de la map
 
 typedef struct {
     int etat; //Construction present dessus (-1 rien, 0 route, 1 maison, 2 chateau d'eau, 3 centrale )
@@ -23,6 +24,10 @@ typedef struct{
     int etat;
 
 }HUD;
+
+
+void initialiserMap(Map map[45][35],HUD hud[6]);
+void boucle(Map map[45][35],HUD hud[6],Vector2 mapPosition,Vector2 mapSize,Vector2 mousePosition,int evolution,int time,int collisionHUD,int collisionMAP);
 
 
 #endif
