@@ -2,6 +2,7 @@
 
 
 int main(){
+
     Map map[45][35];
     HUD hud[6];
     initialiserMap(map,hud);
