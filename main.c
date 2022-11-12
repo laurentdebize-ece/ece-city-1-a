@@ -8,11 +8,6 @@ int main(){
 
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
 
-    int evolution = 0;
-    int time;
-    int collisionHUD;
-    int collisionMAP;
-
     SetTargetFPS(60);
 
     //Fonction executé

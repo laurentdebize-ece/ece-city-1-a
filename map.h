@@ -26,11 +26,6 @@ typedef struct {
     HABITATION habitation;
     CHATEAUEAU chateaueau;
     CENTRALE centrale;
-
-
-    int etat; //Construction present dessus (-1 rien, 0 route, 1 maison, 2 chateau d'eau, 3 centrales)
-    int stade;//Stade d'évolution de la maison (état 1)
-    int tempsBanni; // POur éviter les répétitions
 }MAP;
 
 typedef struct{

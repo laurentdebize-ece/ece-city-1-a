@@ -23,8 +23,6 @@ void initialiserMap(MAP map[45][35],HUD hud[6]){
 
     for (int i=0;i<45;i++){
         for (int j=0;j<35;j++){
-            map[i][j].etat=-1;
-            map[i][j].stade=0;
             map[i][j].occupe=0;
         }
     }
@@ -45,35 +43,6 @@ void dessinerMap(Vector2 mapPosition){
         for (int j = 0; j < 35; j++) {
             DrawRectangle((int)mapPosition.x + i * LARGEUR1CASE,(int)mapPosition.y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, GRAY);
         }
-    }
-}
-
-void placementBatiment(MAP map[45][35],Vector2 mapPosition,int i,int j){
-    if (map[i][j].etat == 0) {  //Quoi faire en fonction de l'etat de la case (voir map.h)
-        DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE, LARGEUR1CASE, BLACK);
-    }
-    else if (map[i][j].etat == 1) { //Evolution des maisons
-        if (map[i][j].stade == 0) {
-            DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE * 2.5 , LARGEUR1CASE * 2.5  , RED);
-        }
-        if (map[i][j].stade == 1) {
-            DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE * 2.5  , LARGEUR1CASE * 2.5  ,
-                          GREEN);
-        }
-        if (map[i][j].stade == 2) {
-            DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE * 2.5  , LARGEUR1CASE * 2.5  ,
-                          YELLOW);
-        }
-        if (map[i][j].stade >= 3) {
-            mapPosition.y = 50;
-            DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE * 2.5, LARGEUR1CASE * 2.5,
-                          BLUE);
-        }
-
-    } else if (map[i][j].etat == 2) {
-        DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE * 3.5, LARGEUR1CASE * 5.5, YELLOW);
-    } else if (map[i][j].etat == 3) {
-        DrawRectangle(mapPosition.x,mapPosition.y, LARGEUR1CASE, LARGEUR1CASE, BLUE);
     }
 }
 
