@@ -7,6 +7,8 @@
 
 #include "raylib.h"
 
+#define NOMBRE_CASE_HUD 6
+
 Rectangle initialisationHUD();
-Rectangle initialisationMAP();
+Rectangle initialisationCaseMAP();
 #endif //ECE_CITY_1_A_BOITEOUTIL_H

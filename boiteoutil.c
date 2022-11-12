@@ -16,11 +16,11 @@ Rectangle initialisationHUD(){
     return HUD;
 }
 
-Rectangle initialisationMAP(){
+Rectangle initialisationCaseMAP(){
     Rectangle MAP;
 
-    MAP.x = LARGEUR1CASE*3;
-    MAP.y = LARGEUR1CASE*3;
+    MAP.x = POSITIONMAP_X;
+    MAP.y = POSITIONMAP_Y;
     MAP.height=LARGEUR1CASE;
     MAP.width=LARGEUR1CASE;
 

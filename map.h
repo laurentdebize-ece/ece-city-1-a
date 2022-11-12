@@ -8,26 +8,37 @@
 
 #include "raylib.h"
 #include "boiteoutil.h"
+#include "element.h"
 
 #define LARGUEUR 1024
 #define HAUTEUR 678
-#define LARGEUR1CASE 15//Distance entre le centre de deux carré adjacent de la map
+#define LARGEUR1CASE 15//Distance entre le centre de deux carrés adjacent de la map
+
+#define POSITIONMAP_X 180
+#define POSITIONMAP_Y 105
+
+enum type{NONOCCUPE, Route,Habitation, Central, ChateauEau};
 
 typedef struct {
-    int etat; //Construction present dessus (-1 rien, 0 route, 1 maison, 2 chateau d'eau, 3 centrale )
-    int stade;//Stade d'evolution de la maison (etat 1)
-    int occupe; //Savoir si il y a deja quelque chose sur la case
+
+    int occupe; //Savoir si il y a deja quelque chose sur la case (ENUM)
+    int route;
+    HABITATION habitation;
+    CHATEAUEAU chateaueau;
+    CENTRALE centrale;
+
+
+    int etat; //Construction present dessus (-1 rien, 0 route, 1 maison, 2 chateau d'eau, 3 centrales)
+    int stade;//Stade d'évolution de la maison (état 1)
     int tempsBanni; // POur éviter les répétitions
-}Map;
+}MAP;
 
 typedef struct{
     int etat;
-
 }HUD;
 
 
-void initialiserMap(Map map[45][35],HUD hud[6]);
-void boucle(Map map[45][35],HUD hud[6],Vector2 mapPosition,Vector2 mapSize,Vector2 mousePosition,int evolution,int time,int collisionHUD,int collisionMAP);
+void initialiserMap(MAP map[45][35],HUD hud[6]);
 
-
+void mapNiveau0(MAP map[45][35], HUD hud[6]);
 #endif
