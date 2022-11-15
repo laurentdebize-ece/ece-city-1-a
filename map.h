@@ -33,6 +33,6 @@ typedef struct {
 
 void initialisationMap(MAP map[45][35]);
 
-void mapNiveau0(MAP map[45][35], HUD hud[6], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]);
+void mapNiveau0(MAP map[45][35], HUD hud[6], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm);
 
 #endif

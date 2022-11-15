@@ -27,6 +27,17 @@ void initialisationMap(MAP map[45][35]){
     }
 }
 
+Rectangle initialisationCaseMAP(){
+    Rectangle MAP;
+
+    MAP.x = POSITIONMAP_X;
+    MAP.y = POSITIONMAP_Y;
+    MAP.height=LARGEUR1CASE;
+    MAP.width=LARGEUR1CASE;
+
+    return MAP;
+}
+
 void dessinerMap(Vector2 mapPosition){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -150,16 +161,15 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
     }
 }
 
-void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
+void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
 
     int lastID_habitation = 0;
 
     Vector2 mapPosition = initialisationPositionMap();
 
-    Rectangle HUD = initialisationCaseHUD();
+    Rectangle HUD[NOMBRE_CASE_HUD];
+    initialisationCaseHUD(HUD);
     Rectangle caseMAP = initialisationCaseMAP();
-
-    int time;
 
     float lifetime = 1.0f;
     Timer timer = {0};
@@ -168,7 +178,7 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
     Vector2 mouseposition = {0};
 
     while(!WindowShouldClose()){
-        time = GetTime();
+        infoPerm.time = GetTime();
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -184,7 +194,7 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         placementElement(mouseposition, caseMAP, map, hud, habitation, lastID_habitation++);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire
-        affichageInfo(time); //Affichage informations de la partie
+        affichageInfo(infoPerm); //Affichage informations de la partie
 
         EndDrawing();
     }
@@ -193,4 +203,3 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
 
 }
-

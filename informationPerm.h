@@ -7,6 +7,16 @@
 
 #include "raylib.h"
 
-void affichageInfo(int time);
+typedef struct{
+    int time;
+    float ECEFlouz;
+    int habitants;
+    int capaciteElec;
+    int capaciteEau;
+}INFO;
+
+INFO initialisationInfo();
+
+void affichageInfo(INFO infoPerm);
 
 #endif //ECE_CITY_1_A_INFORMATIONPERM_H

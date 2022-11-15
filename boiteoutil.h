@@ -14,10 +14,9 @@ typedef struct{
     int etat;
 }HUD;
 
-Rectangle initialisationCaseHUD();
-Rectangle initialisationCaseMAP();
+void initialisationCaseHUD(Rectangle HUD[NOMBRE_CASE_HUD]);
 
 void initialisationHUD(HUD hud[6]);
-void dessinerHUD(Rectangle HUD);
-void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD,Vector2 mousePosition);
+void dessinerHUD(Rectangle HUD[NOMBRE_CASE_HUD]);
+void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector2 mousePosition);
 #endif //ECE_CITY_1_A_BOITEOUTIL_H
