@@ -97,16 +97,6 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
     }
 }
 
-void evolutionElement(MAP map[45][35]){
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.viable == 1){
-
-            }
-        }
-    }
-}
-
 void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], int IDHabitation){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -165,24 +155,26 @@ void evolution(MAP map[45][35]){
             }
         }
     }
-    }
-
+}
 
 void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différents niveaux (0 1 2)
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if(map[i][j].habitation.id == 1){
-                if (map[i][j].habitation.evolution==0){
+                if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, GREEN);
                 }
-                if (map[i][j].habitation.evolution==1){
+                if (map[i][j].habitation.evolution==CABANE){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, RED);
                 }
-                if (map[i][j].habitation.evolution==2){
+                if (map[i][j].habitation.evolution==MAISON){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, YELLOW);
                 }
-                if (map[i][j].habitation.evolution==3){
+                if (map[i][j].habitation.evolution==IMMEUBLE){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, BLUE);
+                }
+                if (map[i][j].habitation.evolution==GRATTE_CIEL){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, PINK);
                 }
             }
             if (map[i][j].route == 1){
