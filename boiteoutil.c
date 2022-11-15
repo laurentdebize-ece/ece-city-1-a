@@ -5,32 +5,21 @@
 #include "boiteoutil.h"
 #include "map.h"
 
-Rectangle initialisationCaseHUD(){
-    Rectangle HUD;
+void initialisationCaseHUD(Rectangle HUD[NOMBRE_CASE_HUD]){
 
-    HUD.height=50;
-    HUD.width=50;
-    HUD.x=10;
-    HUD.y=50;
+    for (int i = 0; i < NOMBRE_CASE_HUD; i++) {
+        HUD[i].height=50;
+        HUD[i].width=50;
+        HUD[i].x=10;
+        HUD[i].y=150 + HUD[i].width * (float)i;
 
-    return HUD;
+    }
 }
 
 void initialisationHUD(HUD hud[6]){
     for (int i=0;i<NOMBRE_CASE_HUD;i++){
         hud[i].etat=0;
     }
-}
-
-Rectangle initialisationCaseMAP(){
-    Rectangle MAP;
-
-    MAP.x = POSITIONMAP_X;
-    MAP.y = POSITIONMAP_Y;
-    MAP.height=LARGEUR1CASE;
-    MAP.width=LARGEUR1CASE;
-
-    return MAP;
 }
 
 void remiseZero(HUD hud[6],int i){
@@ -40,13 +29,13 @@ void remiseZero(HUD hud[6],int i){
     }
 }
 
-void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD,Vector2 mousePosition){
+void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector2 mousePosition){
     for (int i = 0; i < NOMBRE_CASE_HUD; i++) {
 
-        HUD.y = HUD.height + HUD.height * (float)i;
+        //HUD.y = HUD.y + HUD.height * (float)i;
 
-        if (CheckCollisionPointRec(mousePosition, HUD) != 0) {
-            DrawRectangle((int)HUD.x, (int)HUD.y, (int)HUD.width, (int)HUD.height, BLUE);
+        if (CheckCollisionPointRec(mousePosition, HUD[i]) != 0) {
+            DrawRectangle((int)HUD[i].x, (int)HUD[i].y, (int)HUD[i].width, (int)HUD[i].height, BLUE);
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 hud[i].etat = 1;
                 remiseZero(hud, i);
@@ -55,8 +44,8 @@ void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD,Vector2 mousePosition){
     }
 }
 
-void dessinerHUD(Rectangle HUD){
+void dessinerHUD(Rectangle HUD[NOMBRE_CASE_HUD]){
     for (int i = 0; i < 6; i++) {
-        DrawRectangleLines((int)HUD.x, (int)HUD.y + (int)HUD.height * i, (int)HUD.width, (int)HUD.height, BLUE);
+        DrawRectangleLines((int)HUD[i].x, (int)HUD[i].y, (int)HUD[i].width, (int)HUD[i].height, BLUE);
     }
 }

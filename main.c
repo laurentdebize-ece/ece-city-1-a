@@ -2,8 +2,10 @@
 
 
 int main(){
-    MAP map[55][45];
+    MAP map[45][35];
     HUD hud[NOMBRE_CASE_HUD];
+    INFO infoPerm = initialisationInfo();
+
     initialisationMap(map);
     initialisationHUD(hud);
 
@@ -15,12 +17,5 @@ int main(){
     SetTargetFPS(60);
 
     //Fonction executé
-    mapNiveau0(map, hud, habitation, centrale);
-    for (int j = 0; j < 35; j++) {
-        for (int i = 0; i < 45; i++) {
-            printf("%d ",map[i][j].habitation.id);
-        }
-        printf("\n");
-    }
-
+    mapNiveau0(map, hud, habitation, centrale, infoPerm);
 }
