@@ -137,6 +137,23 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
     }
 }
 
+
+void evolution(MAP map[45][35],Timer timer,float lifetime){
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if (map[i][j].habitation.id==1 && map[i][j].habitation.evolution<4){
+                if (TimerDone(timer)) { //Fonction execute toute les 1 seconde
+                    StartTimer(&timer,lifetime);
+                    map[i][j].habitation.evolution++;
+                    printf("r");
+                }//Savoir si temps est un multiple de 15 pour l'evolution
+                }
+
+            }
+        }
+    }
+
+
 void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différents niveaux (0 1 2)
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -181,6 +198,7 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
+        evolution(map,timer,lifetime);
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         placementElement(mouseposition, caseMAP, map, hud, habitation, lastID_habitation++);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire

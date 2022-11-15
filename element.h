@@ -26,6 +26,7 @@ typedef struct{
 }CHATEAUEAU;
 
 typedef struct{
+
     int id;
     int positionX;
     int positionY;
@@ -34,7 +35,11 @@ typedef struct{
     int viable;
     int compteur;
     int impots;
+    int tempsBanni;
+    int compteurEvolution;
+
 }HABITATION;
+
 
 
 
