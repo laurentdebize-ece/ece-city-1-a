@@ -9,22 +9,16 @@ Vector2 initialisationPositionMap(){
     return mapPosition;
 }
 
-void initialisationMap(MAP map[45][35]){
+void initialisationMap(MAP map[55][45]){
 
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            map[i][j].occupe = NONOCCUPE;
+            map[i][j].occupe = 0;
             map[i][j].habitation.id = 0;
             map[i][j].route = 0;
             map[i][j].habitation.viable = 1;
             map[i][j].habitation.tempsFuturEvolution = 15;
 
-        }
-    }
-
-    for (int i=0;i<45;i++){
-        for (int j=0;j<35;j++){
-            map[i][j].occupe=0;
         }
     }
 }
@@ -37,7 +31,7 @@ void dessinerMap(Vector2 mapPosition){
     }
 }
 
-int testMapOccupation(int i, int j, MAP map[45][35], int type){ //type habitation,central,...
+int testMapOccupation(int i, int j, MAP map[55][45], int type){ //type habitation,central,...
     switch (type) {
         case Route:{
             if (map[i][j].occupe == 1){
@@ -86,17 +80,9 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
     }
 }
 
-void evolutionElement(MAP map[45][35]){
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.viable == 1){
 
-            }
-        }
-    }
-}
 
-void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], int IDHabitation){
+void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[55][45], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], int IDHabitation){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -111,7 +97,8 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             map[i][j].occupe = 1;
                             map[i][j].route = 1;
                         }
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && i < 45 - 2 && j < 35 - 2) { //conditions sur i et j sinon maison sort de la map
+                        if (i < 45 - 2 && j < 35 - 2){
+                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1) { //conditions sur i et j sinon maison sort de la map
                             for (int a = 0; a < 3; a++) {
                                 for (int b = 0; b < 3; b++) {
                                     map[i + a][j + b].occupe = 1;
@@ -123,8 +110,9 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                     habitation[IDHabitation].compteurEvolution = 0;
                                 }
                             }
+                            }
                         }
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && i < 45 - 3 && j < 35 - 5) { //conditions sur i et j sinon centrale sort de la map
+                        if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && i < 45 - 3 && j < 35 - 5) { //conditions sur i et j sinon centrale sort de la map
                             for (int a = 0; a < 4; a++) {
                                 for (int b = 0; b < 6; b++) {
                                     map[i + a][j + b].occupe = 1;
@@ -140,10 +128,10 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 }
 
 
-void evolution(MAP map[45][35]){
+void evolution(MAP map[55][45]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id==1 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
+            if (map[i][j].habitation.id!=0 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
                 map[i][j].habitation.compteurEvolution++;
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
                     map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
@@ -157,10 +145,10 @@ void evolution(MAP map[45][35]){
     }
 
 
-void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différents niveaux (0 1 2)
+void dessinerElement(MAP map[55][45]){ //Ajouter une condition pour les différents niveaux (0 1 2)
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if(map[i][j].habitation.id == 1){
+            if(map[i][j].habitation.id != 0){
                 if (map[i][j].habitation.evolution==0){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, GREEN);
                 }
@@ -171,6 +159,9 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, YELLOW);
                 }
                 if (map[i][j].habitation.evolution==3){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, PINK);
+                }
+                if (map[i][j].habitation.evolution==4){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, BLUE);
                 }
             }
@@ -181,9 +172,9 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
     }
 }
 
-void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
+void mapNiveau0(MAP map[55][45], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
 
-    int lastID_habitation = 0;
+    int lastID_habitation = 1;
 
     Vector2 mapPosition = initialisationPositionMap();
 
@@ -203,18 +194,16 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
-
-
         mouseposition = GetMousePosition();
 
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map);
-        placementElement(mouseposition, caseMAP, map, hud, habitation, lastID_habitation++);
+        placementElement(mouseposition, caseMAP, map, hud, habitation, lastID_habitation);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire
         affichageInfo(time); //Affichage informations de la partie
+
 
         EndDrawing();
     }
