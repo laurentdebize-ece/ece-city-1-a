@@ -10,6 +10,7 @@
 #include "boiteoutil.h"
 #include "element.h"
 #include "time.h"
+#include "informationPerm.h"
 
 #define LARGUEUR 1024
 #define HAUTEUR 678
@@ -26,15 +27,12 @@ typedef struct {
     int route;
     HABITATION habitation;
     CHATEAUEAU chateaueau;
-    CENTRALE centrale[NOMBRE_CENTRALE_MAX];
+    CENTRALE centrale;
 }MAP;
 
-typedef struct{
-    int etat;
-}HUD;
 
-
-void initialiserMap(MAP map[45][35],HUD hud[6]);
+void initialisationMap(MAP map[45][35]);
 
 void mapNiveau0(MAP map[45][35], HUD hud[6], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]);
+
 #endif

@@ -1,6 +1,6 @@
 #include "map.h"
 
-Vector2 initialisationMap(){
+Vector2 initialisationPositionMap(){
     Vector2 mapPosition;
 
     mapPosition.x = POSITIONMAP_X;
@@ -9,7 +9,7 @@ Vector2 initialisationMap(){
     return mapPosition;
 }
 
-void initialiserMap(MAP map[45][35],HUD hud[6]){
+void initialisationMap(MAP map[45][35]){
 
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -25,16 +25,6 @@ void initialiserMap(MAP map[45][35],HUD hud[6]){
             map[i][j].occupe=0;
         }
     }
-    for (int i=0;i<NOMBRE_CASE_HUD;i++){
-        hud[i].etat=0;
-    }
-}
-
-void remiseZero(HUD hud[6],int i){
-    for (int j=0;j<6;j++){
-        if (j!=i){
-            hud[j].etat=0;}
-    }
 }
 
 void dessinerMap(Vector2 mapPosition){
@@ -43,26 +33,6 @@ void dessinerMap(Vector2 mapPosition){
             DrawRectangle((int)mapPosition.x + i * LARGEUR1CASE,(int)mapPosition.y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, GRAY);
         }
     }
-}
-
-void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD,Vector2 mousePosition){
-    for (int i = 0; i < NOMBRE_CASE_HUD; i++) {
-
-        HUD.y = HUD.height + HUD.height * (float)i;
-
-        if (CheckCollisionPointRec(mousePosition, HUD) != 0) {
-            DrawRectangle((int)HUD.x, (int)HUD.y, (int)HUD.width, (int)HUD.height, BLUE);
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                hud[i].etat = 1;
-                remiseZero(hud, i);
-            }
-        }
-    }
-}
-
-void affichageInfo(int time){ //Temps, argent etc...
-    DrawRectangleLines(10, 10, 100, 20, BLUE);
-    DrawText(TextFormat("Time: %d", (time)), 20, 15, 10, BLACK);
 }
 
 int testMapOccupation(int i, int j, MAP map[45][35], int type){ //type habitation,central,...
@@ -167,12 +137,6 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
     }
 }
 
-void dessinerHUD(Rectangle HUD){
-    for (int i = 0; i < 6; i++) {
-        DrawRectangleLines((int)HUD.x, (int)HUD.y + (int)HUD.height * i, (int)HUD.width, (int)HUD.height, BLUE);
-    }
-}
-
 void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différents niveaux (0 1 2)
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -190,9 +154,9 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
     int lastID_habitation = 0;
 
-    Vector2 mapPosition = initialisationMap();
+    Vector2 mapPosition = initialisationPositionMap();
 
-    Rectangle HUD = initialisationHUD();
+    Rectangle HUD = initialisationCaseHUD();
     Rectangle caseMAP = initialisationCaseMAP();
 
     int time;
@@ -202,9 +166,6 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
     StartTimer(&timer, lifetime);
 
     Vector2 mouseposition = {0};
-
-
-    int i = 1;
 
     while(!WindowShouldClose()){
         time = GetTime();

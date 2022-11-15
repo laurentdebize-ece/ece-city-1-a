@@ -7,8 +7,17 @@
 
 #include "raylib.h"
 
+
 #define NOMBRE_CASE_HUD 6
 
-Rectangle initialisationHUD();
+typedef struct{
+    int etat;
+}HUD;
+
+Rectangle initialisationCaseHUD();
 Rectangle initialisationCaseMAP();
+
+void initialisationHUD(HUD hud[6]);
+void dessinerHUD(Rectangle HUD);
+void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD,Vector2 mousePosition);
 #endif //ECE_CITY_1_A_BOITEOUTIL_H

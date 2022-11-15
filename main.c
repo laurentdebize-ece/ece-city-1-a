@@ -4,7 +4,8 @@
 int main(){
     MAP map[45][35];
     HUD hud[NOMBRE_CASE_HUD];
-    initialiserMap(map,hud);
+    initialisationMap(map);
+    initialisationHUD(hud);
 
     HABITATION habitation[100]; //créé si possible un tableau dynamique avec redimensionnement
     CENTRALE centrale[100]; //créé si possible un tableau dynamique avec redimensionnement
