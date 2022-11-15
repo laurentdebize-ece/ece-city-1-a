@@ -9,6 +9,7 @@
 #include "raylib.h"
 #include "boiteoutil.h"
 #include "element.h"
+#include "time.h"
 
 #define LARGUEUR 1024
 #define HAUTEUR 678
@@ -17,7 +18,7 @@
 #define POSITIONMAP_X 180
 #define POSITIONMAP_Y 105
 
-enum type{NONOCCUPE, Route,Habitation, Central, ChateauEau};
+enum type{NONOCCUPE, Route,Habitation, Centrale, ChateauEau};
 
 typedef struct {
 
@@ -25,7 +26,7 @@ typedef struct {
     int route;
     HABITATION habitation;
     CHATEAUEAU chateaueau;
-    CENTRALE centrale;
+    CENTRALE centrale[NOMBRE_CENTRALE_MAX];
 }MAP;
 
 typedef struct{
@@ -35,5 +36,5 @@ typedef struct{
 
 void initialiserMap(MAP map[45][35],HUD hud[6]);
 
-void mapNiveau0(MAP map[45][35], HUD hud[6]);
+void mapNiveau0(MAP map[45][35], HUD hud[6], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]);
 #endif

@@ -6,14 +6,13 @@ int main(){
     HUD hud[NOMBRE_CASE_HUD];
     initialiserMap(map,hud);
 
+    HABITATION habitation[100]; //créé si possible un tableau dynamique avec redimensionnement
+    CENTRALE centrale[100]; //créé si possible un tableau dynamique avec redimensionnement
+
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
 
     SetTargetFPS(60);
 
     //Fonction executé
-
-    //affichermenu();
-    //boucle(map,hud,evolution,time,collisionHUD,collisionMAP);
-    mapNiveau0(map, hud);
-
+    mapNiveau0(map, hud, habitation, centrale);
 }
