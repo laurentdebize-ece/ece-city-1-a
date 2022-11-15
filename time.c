@@ -1,7 +1,3 @@
-//
-// Created by Erwan Pillard on 12/11/2022.
-//
-
 #include "time.h"
 
 void StartTimer(Timer *timer, double lifetime)
