@@ -16,6 +16,8 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].occupe = NONOCCUPE;
             map[i][j].habitation.id = 0;
             map[i][j].route = 0;
+            map[i][j].habitation.viable = 1;
+            map[i][j].habitation.tempsFuturEvolution = 15;
 
         }
     }
@@ -116,9 +118,9 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                     map[i][j].habitation.id = 1;
                                     habitation[IDHabitation].positionX = i;
                                     habitation[IDHabitation].positionY = j;
-                                    habitation[IDHabitation].viable = 0;
+                                    habitation[IDHabitation].viable = 1;
                                     habitation[IDHabitation].evolution = 0;
-                                    habitation[IDHabitation].compteur = 0;
+                                    habitation[IDHabitation].compteurEvolution = 0;
                                 }
                             }
                         }
@@ -138,27 +140,39 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 }
 
 
-void evolution(MAP map[45][35],Timer timer,float lifetime){
+void evolution(MAP map[45][35]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id==1 && map[i][j].habitation.evolution<4){
-                if (TimerDone(timer)) { //Fonction execute toute les 1 seconde
-                    StartTimer(&timer,lifetime);
+            if (map[i][j].habitation.id==1 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
+                map[i][j].habitation.compteurEvolution++;
+                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
+                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
+                    map[i][j].habitation.tempsBanni=map[i][j].habitation.compteurEvolution;
                     map[i][j].habitation.evolution++;
-                    printf("r");
-                }//Savoir si temps est un multiple de 15 pour l'evolution
                 }
 
             }
         }
+    }
     }
 
 
 void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différents niveaux (0 1 2)
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if(map[i][j].habitation.id != 0){
-                DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, GREEN);
+            if(map[i][j].habitation.id == 1){
+                if (map[i][j].habitation.evolution==0){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, GREEN);
+                }
+                if (map[i][j].habitation.evolution==1){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, RED);
+                }
+                if (map[i][j].habitation.evolution==2){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, YELLOW);
+                }
+                if (map[i][j].habitation.evolution==3){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, BLUE);
+                }
             }
             if (map[i][j].route == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLACK);
@@ -178,7 +192,7 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
     int time;
 
-    float lifetime = 1.0f;
+    float lifetime = 10.0f;
     Timer timer = {0};
     StartTimer(&timer, lifetime);
 
@@ -190,16 +204,14 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
-            StartTimer(&timer, lifetime);
 
-        }
+
         mouseposition = GetMousePosition();
 
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
-        evolution(map,timer,lifetime);
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
+        evolution(map);
         placementElement(mouseposition, caseMAP, map, hud, habitation, lastID_habitation++);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire
         affichageInfo(time); //Affichage informations de la partie

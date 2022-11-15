@@ -35,8 +35,9 @@ typedef struct{
     int viable;
     int compteur;
     int impots;
-    int tempsBanni;
-    int compteurEvolution;
+    float tempsBanni;
+    float compteurEvolution;
+    float tempsFuturEvolution;
 
 }HABITATION;
 
