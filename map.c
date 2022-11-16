@@ -18,6 +18,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].route = 0;
             map[i][j].habitation.viable = 1;
             map[i][j].habitation.tempsFuturEvolution = 15;
+            map[0][0].idHabitation=0;
 
         }
     }
@@ -107,16 +108,17 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             map[i][j].route = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1) { //conditions sur i et j sinon maison sort de la map
+                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1) {//conditions sur i et j sinon maison sort de la map
+                            map[0][0].idHabitation++;
                             for (int a = 0; a < 3; a++) {
                                 for (int b = 0; b < 3; b++) {
                                     map[i + a][j + b].occupe = 1;
-                                    map[i][j].habitation.id = 1;
-                                    habitation[IDHabitation].positionX = i;
-                                    habitation[IDHabitation].positionY = j;
-                                    habitation[IDHabitation].viable = 1;
-                                    habitation[IDHabitation].evolution = 0;
-                                    habitation[IDHabitation].compteurEvolution = 0;
+                                    map[i][j].habitation.id = map[0][0].idHabitation;
+                                    habitation[map[0][0].idHabitation].positionX = i;
+                                    habitation[map[0][0].idHabitation].positionY = j;
+                                    habitation[map[0][0].idHabitation].viable = 1;
+                                    habitation[map[0][0].idHabitation].evolution = 0;
+                                    habitation[map[0][0].idHabitation].compteurEvolution = 0;
                                 }
                             }
                             }
@@ -140,7 +142,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 void evolution(MAP map[45][35]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id==1 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
+            if (map[i][j].habitation.id!=0 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
                 map[i][j].habitation.compteurEvolution++;
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
                     map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
@@ -156,7 +158,7 @@ void evolution(MAP map[45][35]){
 void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différents niveaux (0 1 2)
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if(map[i][j].habitation.id == 1){
+            if(map[i][j].habitation.id != 0){
                 if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, GREEN);
                 }
