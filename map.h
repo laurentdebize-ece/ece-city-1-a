@@ -27,6 +27,7 @@ typedef struct {
     int route;
     int idHabitation;
     int idCentrale;
+    int nombreTotalHabitant;
     HABITATION habitation;
     CHATEAUEAU chateaueau;
     CENTRALE centrale;

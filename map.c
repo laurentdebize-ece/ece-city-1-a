@@ -17,9 +17,12 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.id = 0;
             map[i][j].route = 0;
             map[i][j].habitation.viable = 1;
-            map[i][j].habitation.tempsFuturEvolution = 15;
+            map[i][j].habitation.evolution = 0;
+            map[i][j].habitation.tempsFuturEvolution = 5;
+            map[i][j].habitation.nombreHabitants = 0;
             map[0][0].idHabitation = 0;
             map[0][0].idCentrale = 0;
+            map[0][0].nombreTotalHabitant = 0;
             map[i][j].centrale.id = 0;
 
         }
@@ -114,7 +117,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             map[i][j].route = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1) {//conditions sur i et j sinon maison sort de la map
+                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && map[i][j].habitation.viable == 1) {//conditions sur i et j sinon maison sort de la map
                             map[0][0].idHabitation++;
                             for (int a = 0; a < 3; a++) {
                                 for (int b = 0; b < 3; b++) {
@@ -122,7 +125,6 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                     map[i][j].habitation.id = map[0][0].idHabitation;
                                     habitation[map[0][0].idHabitation].positionX = i;
                                     habitation[map[0][0].idHabitation].positionY = j;
-                                    habitation[map[0][0].idHabitation].viable = 1;
                                     habitation[map[0][0].idHabitation].evolution = 0;
                                     habitation[map[0][0].idHabitation].compteurEvolution = 0;
                                 }
@@ -149,7 +151,19 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
     }
 }
 
-void consommationElec(){
+void habitationViableElec(MAP map[45][35]){
+
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if(map[0][0].nombreTotalHabitant > map[0][0].idCentrale * 5000){
+                map[i][j].habitation.viable = 0;
+            }
+            else if(map[0][0].nombreTotalHabitant < map[0][0].idCentrale * 5000){
+                map[i][j].habitation.viable = 1;
+            }
+
+        }
+    }
 
 }
 
@@ -160,12 +174,29 @@ void evolution(MAP map[45][35]){
             if (map[i][j].habitation.id!=0 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
                 map[i][j].habitation.compteurEvolution++;
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
-                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
+                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
                     map[i][j].habitation.tempsBanni=map[i][j].habitation.compteurEvolution;
                     map[i][j].habitation.evolution++;
                 }
 
             }
+            if(map[i][j].habitation.evolution == 0){
+                map[i][j].habitation.nombreHabitants = 0;
+                //map[i][j].habitation.viable = 1;
+            }
+            if(map[i][j].habitation.evolution == 1){
+                map[i][j].habitation.nombreHabitants = 10;
+            }
+            if(map[i][j].habitation.evolution == 2){
+                map[i][j].habitation.nombreHabitants = 50;
+            }
+            if(map[i][j].habitation.evolution == 3){
+                map[i][j].habitation.nombreHabitants = 100;
+            }
+            if(map[i][j].habitation.evolution == 4){
+                map[i][j].habitation.nombreHabitants = 1000;
+            }
+
         }
     }
 }
@@ -201,9 +232,19 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
     }
 }
 
-void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
+void nombreHabitant(MAP map[45][35]){
+    int habitantTotal = 0;
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if (map[i][j].habitation.id != 0){
+                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants;
+        }
+        }
+    }
+    map[0][0].nombreTotalHabitant = habitantTotal;
+}
 
-    int lastID_habitation = 1;
+void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
 
     Vector2 mapPosition = initialisationPositionMap();
 
@@ -231,6 +272,8 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
+        nombreHabitant(map);
+        habitationViableElec(map);
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map);
         placementElement(mouseposition, caseMAP, map, hud, habitation, centrale);
