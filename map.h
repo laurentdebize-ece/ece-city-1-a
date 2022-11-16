@@ -26,6 +26,7 @@ typedef struct {
     int occupe; //Savoir si il y a deja quelque chose sur la case (ENUM)
     int route;
     int idHabitation;
+    int idCentrale;
     HABITATION habitation;
     CHATEAUEAU chateaueau;
     CENTRALE centrale;

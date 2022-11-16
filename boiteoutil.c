@@ -1,7 +1,3 @@
-//
-// Created by Erwan Pillard on 09/11/2022.
-//
-
 #include "boiteoutil.h"
 #include "map.h"
 

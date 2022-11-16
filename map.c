@@ -18,7 +18,9 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].route = 0;
             map[i][j].habitation.viable = 1;
             map[i][j].habitation.tempsFuturEvolution = 15;
-            map[0][0].idHabitation=0;
+            map[0][0].idHabitation = 0;
+            map[0][0].idCentrale = 0;
+            map[i][j].centrale.id = 0;
 
         }
     }
@@ -87,12 +89,16 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
                     DrawRectangle(caseMAP.x,caseMAP.y, 3 * LARGEUR1CASE,3 * LARGEUR1CASE, GREEN);
                     break;
                 }
+                case 2:{
+                    DrawRectangle(caseMAP.x,caseMAP.y, 4 * LARGEUR1CASE,6 * LARGEUR1CASE, YELLOW);
+                    break;
+                }
             }
         }
     }
 }
 
-void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], int IDHabitation){
+void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -123,11 +129,16 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             }
                             }
                         }
-                        if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && i < 45 - 3 && j < 35 - 5) { //conditions sur i et j sinon centrale sort de la map
-                            for (int a = 0; a < 4; a++) {
-                                for (int b = 0; b < 6; b++) {
-                                    map[i + a][j + b].occupe = 1;
-                                    //...
+                        if (i < 45 - 3 && j < 35 - 5) {
+                            if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 ) { //conditions sur i et j sinon centrale sort de la map
+                                map[0][0].idCentrale++;
+                                for (int a = 0; a < 4; a++) {
+                                    for (int b = 0; b < 6; b++) {
+                                        map[i + a][j + b].occupe = 1;
+                                        map[i][j].centrale.id = map[0][0].idCentrale;
+                                        centrale[map[0][0].idCentrale].positionX = i;
+                                        centrale[map[0][0].idCentrale].positionY = j;
+                                    }
                                 }
                             }
                         }
@@ -136,6 +147,10 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
             }
         }
     }
+}
+
+void consommationElec(){
+
 }
 
 
@@ -166,7 +181,7 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, RED);
                 }
                 if (map[i][j].habitation.evolution==MAISON){
-                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, YELLOW);
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, VIOLET);
                 }
                 if (map[i][j].habitation.evolution==IMMEUBLE){
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, BLUE);
@@ -177,6 +192,10 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
             }
             if (map[i][j].route == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLACK);
+            }
+            if(map[i][j].centrale.id != 0){
+                DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 4 * LARGEUR1CASE, 6 * LARGEUR1CASE, YELLOW);
+
             }
         }
     }
@@ -214,7 +233,7 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map);
-        placementElement(mouseposition, caseMAP, map, hud, habitation, lastID_habitation);
+        placementElement(mouseposition, caseMAP, map, hud, habitation, centrale);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire
         affichageInfo(infoPerm); //Affichage informations de la partie
 
