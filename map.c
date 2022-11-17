@@ -117,7 +117,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             map[i][j].route = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && map[i][j].habitation.viable == 1) {//conditions sur i et j sinon maison sort de la map
+                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1) {//conditions sur i et j sinon maison sort de la map
                             map[0][0].idHabitation++;
                             for (int a = 0; a < 3; a++) {
                                 for (int b = 0; b < 3; b++) {
@@ -182,7 +182,7 @@ void evolution(MAP map[45][35]){
             }
             if(map[i][j].habitation.evolution == 0){
                 map[i][j].habitation.nombreHabitants = 0;
-                //map[i][j].habitation.viable = 1;
+
             }
             if(map[i][j].habitation.evolution == 1){
                 map[i][j].habitation.nombreHabitants = 10;
