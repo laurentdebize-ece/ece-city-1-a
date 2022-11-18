@@ -137,7 +137,7 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
     }
 }
 
-void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
+void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -148,13 +148,15 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 
                 if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                     for (int k = 0; k < 6; k++) {
-                        if (hud[0].etat == 1 && testMapOccupation(i, j, map, Route)) { //conditions sur i et j sinon maison sort de la map
+                        if (hud[0].etat == 1 && testMapOccupation(i, j, map, Route) && infoPerm->ECEFlouz >= infoPerm->prixRoute) { //conditions sur i et j sinon maison sort de la map
+                            infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixRoute;
                             map[i][j].occupe = 1;
                             map[i][j].route = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1) {//conditions sur i et j sinon maison sort de la map
+                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la map
                             map[0][0].idHabitation++;
+                            infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixHabitation;
                             for (int a = 0; a < 3; a++) {
                                 for (int b = 0; b < 3; b++) {
                                     map[i + a][j + b].occupe = 1;
@@ -168,8 +170,9 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             }
                         }
                         if (i < 45 - 3 && j < 35 - 5) {
-                            if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 ) { //conditions sur i et j sinon centrale sort de la map
+                            if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && infoPerm->ECEFlouz >= infoPerm->prixCentrale) { //conditions sur i et j sinon centrale sort de la map
                                 map[0][0].idCentrale++;
+                                infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixCentrale;
                                 for (int a = 0; a < 4; a++) {
                                     for (int b = 0; b < 6; b++) {
                                         map[i + a][j + b].occupe = 1;
@@ -214,11 +217,9 @@ void evolution(MAP map[45][35]){
                     map[i][j].habitation.tempsBanni=map[i][j].habitation.compteurEvolution;
                     map[i][j].habitation.evolution++;
                 }
-
             }
             if(map[i][j].habitation.evolution == 0){
                 map[i][j].habitation.nombreHabitants = 0;
-
             }
             if(map[i][j].habitation.evolution == 1){
                 map[i][j].habitation.nombreHabitants = 10;
@@ -281,7 +282,6 @@ void nombreHabitant(MAP map[45][35]){
 }
 
 void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
-
     Vector2 mapPosition = initialisationPositionMap();
 
     Rectangle HUD[NOMBRE_CASE_HUD];
@@ -314,9 +314,10 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         habitationViable(map);
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map);
-        placementElement(mouseposition, caseMAP, map, hud, habitation, centrale);
+        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale);
+        //printf("%f\n",infoPerm.ECEFlouz);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire
-        affichageInfo(infoPerm); //Affichage informations de la partie
+        affichageInfo(&infoPerm); //Affichage informations de la partie
 
 
         EndDrawing();

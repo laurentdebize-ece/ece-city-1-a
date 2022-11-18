@@ -4,10 +4,11 @@
 int main(){
     MAP map[45][35];
     HUD hud[NOMBRE_CASE_HUD];
-    INFO infoPerm = initialisationInfo();
+    INFO infoPerm;
 
     initialisationMap(map);
     initialisationHUD(hud);
+    initialisationInfo(&infoPerm);
 
     HABITATION habitation[100]; //créé si possible un tableau dynamique avec redimensionnement
     CENTRALE centrale[100]; //créé si possible un tableau dynamique avec redimensionnement
@@ -25,6 +26,7 @@ int main(){
         printf("\n");
     }
     printf("%d\n",map[0][0].habitation.connex);
-    printf("%d ",map[0][0].habitation.elec);
+    //infoPerm.ECEFlouz = infoPerm.ECEFlouz -1000;
+    printf("%f ",infoPerm.ECEFlouz);
 
 }
