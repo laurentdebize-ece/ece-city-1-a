@@ -16,7 +16,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].occupe = 0;
             map[i][j].habitation.id = 0;
             map[i][j].route = 0;
-            map[i][j].habitation.viable = 1;
+            map[i][j].habitation.viable = 0;
             map[i][j].habitation.evolution = 0;
             map[i][j].habitation.tempsFuturEvolution = 5;
             map[i][j].habitation.nombreHabitants = 0;
@@ -24,6 +24,8 @@ void initialisationMap(MAP map[45][35]){
             map[0][0].idCentrale = 0;
             map[0][0].nombreTotalHabitant = 0;
             map[i][j].centrale.id = 0;
+            map[i][j].habitation.connex = 0;
+            map[i][j].habitation.elec = 1;
 
         }
     }
@@ -47,6 +49,40 @@ void dessinerMap(Vector2 mapPosition){
         }
     }
 }
+
+void connexRoute(MAP map[45][35]){
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if (map[i][j].habitation.id!=0){
+                for (int k = -1; k < 4; k++) {
+                    for (int l = -1; l < 4; l++) {
+                        if (map[i + k][j + l].route ==1){
+                            map[i][j].habitation.connex = 1;
+                        }
+                    }
+            }
+            }
+
+        }
+    }
+}
+
+void habitationViable(MAP map[45][35]){
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if (map[i][j].habitation.id!=0){
+                if (map[i][j].habitation.elec == 1 && map[i][j].habitation.connex == 1){
+                    map[i][j].habitation.viable = 1;
+                }
+                else {
+                    map[i][j].habitation.viable = 0;
+                }
+            }
+            }
+    }
+
+}
+
 
 int testMapOccupation(int i, int j, MAP map[45][35], int type){ //type habitation,central,...
     switch (type) {
@@ -156,10 +192,10 @@ void habitationViableElec(MAP map[45][35]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if(map[0][0].nombreTotalHabitant > map[0][0].idCentrale * 5000){
-                map[i][j].habitation.viable = 0;
+                map[i][j].habitation.elec = 0;
             }
             else if(map[0][0].nombreTotalHabitant < map[0][0].idCentrale * 5000){
-                map[i][j].habitation.viable = 1;
+                map[i][j].habitation.elec = 1;
             }
 
         }
@@ -273,7 +309,9 @@ void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
         nombreHabitant(map);
+        connexRoute(map);
         habitationViableElec(map);
+        habitationViable(map);
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map);
         placementElement(mouseposition, caseMAP, map, hud, habitation, centrale);

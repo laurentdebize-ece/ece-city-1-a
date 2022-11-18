@@ -24,7 +24,7 @@ int main(){
         }
         printf("\n");
     }
-    printf("%d\n",map[0][0].nombreTotalHabitant);
-    printf("%d ",map[0][0].idCentrale * 5000);
+    printf("%d\n",map[0][0].habitation.connex);
+    printf("%d ",map[0][0].habitation.elec);
 
 }

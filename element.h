@@ -35,6 +35,8 @@ typedef struct{
     int evolution; //0 : ruine, 1 : cabane,...
     int nombreHabitants;
     int viable;
+    int connex;
+    int elec;
     int compteur;
     int impots;
     float tempsBanni;
