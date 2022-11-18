@@ -8,6 +8,8 @@
 #define NOMBRE_HABITATION_MAX 100
 #define NOMBRE_CENTRALE_MAX 50
 
+enum evolution {TERRAIN_VAGUE, CABANE, MAISON, IMMEUBLE, GRATTE_CIEL};
+
 typedef struct{
     int id;
     int positionX;
@@ -33,10 +35,13 @@ typedef struct{
     int evolution; //0 : ruine, 1 : cabane,...
     int nombreHabitants;
     int viable;
+    int connex;
+    int elec;
     int compteur;
     int impots;
-    int tempsBanni;
-    int compteurEvolution;
+    float tempsBanni;
+    float compteurEvolution;
+    float tempsFuturEvolution;
 
 }HABITATION;
 
