@@ -2,7 +2,6 @@
 #include "raylib.h"
 
 int modeJeu(void)
-
 {
     const int screenWidth = 1024;
     const int screenHeight = 768;
@@ -15,6 +14,8 @@ int modeJeu(void)
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
+        int X = GetMouseX();
+        int Y = GetMouseY();
 
         DrawTexture(texture, 0, 0, WHITE);
 
@@ -30,8 +31,21 @@ int modeJeu(void)
         DrawText("COMMUNISTE", 135, 450, 40, YELLOW);
         DrawText("CAPITALISTE", 615, 450, 40, YELLOW);
 
-        // bool IsMouseButtonPressed(int button);
+        if ((X >= 100) && (X <= 450) && (Y <= 550) && (Y >= 400)){
+            DrawRectangleLines(100, 400, 350, 150, BLACK);
+        }
+        if ((X >= 580) && (X <= 900) && (Y <= 550) && (Y >= 400)){
+            DrawRectangleLines(580, 400, 350, 150, BLACK);
+        }
 
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) ){
+            if ((X >= 100) && (X <= 450) && (Y <= 550) && (Y >= 400)){
+                return 1;
+            }
+            if ((X >= 580) && (X <= 900) && (Y <= 550) && (Y >= 400)){
+                return 1;
+            }
+        }
 
         EndDrawing();
     }
