@@ -13,7 +13,7 @@
 #include "informationPerm.h"
 
 #define LARGUEUR 1024
-#define HAUTEUR 678
+#define HAUTEUR 768
 #define LARGEUR1CASE 15//Distance entre le centre de deux carrés adjacent de la map
 
 #define POSITIONMAP_X 180

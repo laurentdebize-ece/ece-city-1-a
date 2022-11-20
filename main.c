@@ -1,7 +1,13 @@
 #include "map.h"
+#include "menu.h"
 
 
 int main(){
+    int choixmode = 0;
+
+    accueil();
+    modeJeu(&choixmode);
+
     MAP map[45][35];
     HUD hud[NOMBRE_CASE_HUD];
     INFO infoPerm;
@@ -16,6 +22,7 @@ int main(){
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
 
     SetTargetFPS(60);
+
 
     //Fonction executé
     mapNiveau0(map, hud, habitation, centrale, infoPerm);
