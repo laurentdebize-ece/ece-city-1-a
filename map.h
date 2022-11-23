@@ -11,6 +11,7 @@
 #include "element.h"
 #include "time.h"
 #include "informationPerm.h"
+#include "menu.h"
 
 #define LARGUEUR 1024
 #define HAUTEUR 768
@@ -25,8 +26,10 @@ typedef struct {
 
     int occupe; //Savoir si il y a deja quelque chose sur la case (ENUM)
     int route;
+    int connexite;
     int idHabitation;
     int idCentrale;
+    int idChateauEau;
     int nombreTotalHabitant;
     HABITATION habitation;
     CHATEAUEAU chateaueau;

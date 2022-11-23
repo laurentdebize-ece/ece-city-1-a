@@ -11,20 +11,24 @@
 enum evolution {TERRAIN_VAGUE, CABANE, MAISON, IMMEUBLE, GRATTE_CIEL};
 
 typedef struct{
+
     int id;
     int positionX;
     int positionY;
     int capacite;
     int quantiteDistribue;
+
 }CENTRALE;
 
 
 typedef struct{
+
     int id;
     int positionX;
     int positionY;
     int capacite;
     int quantiteDistribue;
+
 }CHATEAUEAU;
 
 typedef struct{
@@ -37,6 +41,7 @@ typedef struct{
     int viable;
     int connex;
     int elec;
+    int eau;
     int compteur;
     int impots;
     float tempsBanni;

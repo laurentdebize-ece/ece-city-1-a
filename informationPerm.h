@@ -12,6 +12,7 @@ typedef struct{
     int capaciteEau;
     float prixHabitation;
     float prixCentrale;
+    float prixChateauEau;
     float prixRoute;
 
 }INFO;
