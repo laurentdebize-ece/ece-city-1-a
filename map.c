@@ -368,10 +368,9 @@ void nombreHabitant(MAP map[45][35]){
     map[0][0].nombreTotalHabitant = habitantTotal;
 }
 
-
-
-void mapNiveau0(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
+void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
     Vector2 mapPosition = initialisationPositionMap();
+
     Rectangle HUD[NOMBRE_CASE_HUD];
     initialisationCaseHUD(HUD);
     Rectangle caseMAP = initialisationCaseMAP();
