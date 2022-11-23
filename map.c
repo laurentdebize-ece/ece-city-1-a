@@ -15,7 +15,8 @@ void initialisationMap(MAP map[45][35]){
         for (int j = 0; j < 35; j++) {
             map[i][j].occupe = 0;
             map[i][j].habitation.id = 0;
-            map[i][j].route = 0;
+            map[i][j].route.id = 0;
+            map[i][j].route.visite = 0;
             map[i][j].habitation.viable = 0;
             map[i][j].habitation.evolution = 0;
             map[i][j].habitation.tempsFuturEvolution = 5;
@@ -50,14 +51,55 @@ void dessinerMap(Vector2 mapPosition){
     }
 }
 
-void connexRoute(MAP map[45][35]){
+void ecrireFichierTexte(int s1, int s2, int compteur, Graphe *g){
+    FILE *ifs = fopen("..//graphe.txt", "w");
+    int taille, orientation, ordre, valeur;
+
+    if (!ifs) {
+        printf("Erreur de lecture fichier\n");
+        exit(-1);
+    }
+    fprintf(ifs, "%d\n", g->ordre);
+    fprintf(ifs, "%d\n", g->taille);
+    fprintf(ifs, "%d\n", g->orientation);
+    fprintf(ifs, "%d %d %d", s1, s2, compteur);
+
+    fclose(ifs);
+}
+
+int parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *g){
+
+    for (int i = -1; i < 1; i++) {
+        if ((x + i) > 0 && (x + i) < 45 && map[x + i][y].route.id == 1 && i != 0 && map[x + i][y].route.visite == 0){
+            compteur += 1;
+            map[x + i][y].route.visite = 1;
+            parcourirRoute(map,x + i, y, compteur, s1, g);
+        }
+        else if ((x + i) > 0 && (x + i) < 45 && map[x + i][y].habitation.id != 0 && i != 0){
+            ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
+        }
+    }
+    for (int i = -1; i < 1; i++) {
+        if ((y + i) > 0 && (y + i) < 35 && map[x][y + i].route.id == 1 && i != 0 && map[x][y + i].route.visite == 0){
+            compteur += 1;
+            map[x][y - i].route.visite = 1;
+            parcourirRoute(map,x, i + y, compteur, s1, g);
+        }
+        else if ((y + i) > 0 && (y + i) < 35 && map[x][y + i].habitation.id != 0 && i != 0){
+            ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
+        }
+    }
+}
+
+void connexRoute(MAP map[45][35], Graphe *g){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if (map[i][j].habitation.id!=0){
                 for (int k = -1; k < 4; k++) {
                     for (int l = -1; l < 4; l++) {
-                        if (map[i + k][j + l].route ==1){
+                        if (map[i + k][j + l].route.id ==1){
                             map[i][j].habitation.connex = 1;
+                            parcourirRoute(map, i+k, j+l, 1, map[i][j].habitation.id, g);
                         }
                     }
             }
@@ -82,7 +124,6 @@ void habitationViable(MAP map[45][35]){
     }
 
 }
-
 
 int testMapOccupation(int i, int j, MAP map[45][35], int type){ //type habitation,central,...
     switch (type) {
@@ -151,7 +192,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                         if (hud[0].etat == 1 && testMapOccupation(i, j, map, Route) && infoPerm->ECEFlouz >= infoPerm->prixRoute) { //conditions sur i et j sinon maison sort de la map
                             infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixRoute;
                             map[i][j].occupe = 1;
-                            map[i][j].route = 1;
+                            map[i][j].route.id = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
                         if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la map
@@ -166,6 +207,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                     habitation[map[0][0].idHabitation].evolution = 0;
                                     habitation[map[0][0].idHabitation].compteurEvolution = 0;
                                 }
+
                             }
                             }
                         }
@@ -258,7 +300,7 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, 3 * LARGEUR1CASE, 3 * LARGEUR1CASE, PINK);
                 }
             }
-            if (map[i][j].route == 1){
+            if (map[i][j].route.id == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLACK);
             }
             if(map[i][j].centrale.id != 0){
@@ -281,7 +323,17 @@ void nombreHabitant(MAP map[45][35]){
     map[0][0].nombreTotalHabitant = habitantTotal;
 }
 
+void initialiserGraphe(Graphe *g){
+    g->orientation = 0;
+    g->ordre = 0;
+    g->taille = 0;
+}
+
 void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
+
+    Graphe *graphe = lire_graphe("..//graphe.txt");
+    initialiserGraphe(graphe);
+
     Vector2 mapPosition = initialisationPositionMap();
 
     Rectangle HUD[NOMBRE_CASE_HUD];
@@ -295,6 +347,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
     Vector2 mouseposition = {0};
 
     while(!WindowShouldClose()){
+
         infoPerm.time = GetTime();
 
         BeginDrawing();
@@ -306,14 +359,19 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         }
         mouseposition = GetMousePosition();
 
+        //HUD
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
-        nombreHabitant(map);
-        connexRoute(map);
-        habitationViableElec(map);
-        habitationViable(map);
+
+        //nombreHabitant(map);
+        connexRoute(map, graphe);
+        //habitationViableElec(map);
+        //habitationViable(map);
+
+        //Map
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map);
+
         placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale);
         //printf("%f\n",infoPerm.ECEFlouz);
         dessinerElement(map); //Dessine toutes les maisons enregistrées en mémoire

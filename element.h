@@ -46,7 +46,10 @@ typedef struct{
 }HABITATION;
 
 
-
+typedef struct {
+    int visite;
+    int id;
+}ROUTE;
 
 
 

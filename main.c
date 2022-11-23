@@ -3,6 +3,9 @@
 #include "Graphe/Graphe.h"
 
 int main(){
+
+    Graphe *graphe;
+
     int choixmode = 0;
 
     MAP map[45][35];
@@ -27,7 +30,7 @@ int main(){
     mapECECITY(map, hud, habitation, centrale, infoPerm);
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){
-            printf("%d ",map[i][j].habitation.viable);
+            printf("%d ",map[i][j].habitation.id);
         }
         printf("\n");
     }
