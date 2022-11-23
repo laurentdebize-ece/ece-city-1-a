@@ -4,7 +4,7 @@
 void accueil(void){
     bool fin;
 
-    Texture2D texture = LoadTexture("../accueil2.png");
+    Texture2D texture = LoadTexture("../images/Menu/accueil2.png");
 
     while (!WindowShouldClose() && !fin)
     {
@@ -30,7 +30,7 @@ void modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
 {
     bool fin;
 
-    Texture2D texture = LoadTexture("../imgmenu.png");
+    Texture2D texture = LoadTexture("../images/Menu/imgmenu.png");
 
     while (!WindowShouldClose() && !fin)
     {

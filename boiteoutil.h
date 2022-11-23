@@ -15,7 +15,6 @@ typedef struct{
 }HUD;
 
 void initialisationCaseHUD(Rectangle HUD[NOMBRE_CASE_HUD]);
-
 void initialisationHUD(HUD hud[6]);
 void dessinerHUD(Rectangle HUD[NOMBRE_CASE_HUD]);
 void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector2 mousePosition);

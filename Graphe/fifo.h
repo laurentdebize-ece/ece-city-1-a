@@ -1,7 +1,3 @@
-//
-// Created by Laurent Debize on 21/09/2022.
-//
-
 #ifndef TP2_CHARGEMENT_GRAPHE_C_FIFO_H
 #define TP2_CHARGEMENT_GRAPHE_C_FIFO_H
 

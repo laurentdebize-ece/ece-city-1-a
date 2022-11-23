@@ -1,7 +1,3 @@
-//
-// Created by Erwan Pillard on 08/11/2022.
-//
-
 #ifndef ECE_CITY_1_A_JEU_H
 #define ECE_CITY_1_A_JEU_H
 

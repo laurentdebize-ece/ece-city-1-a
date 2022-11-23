@@ -4,6 +4,7 @@
 void initialisationCaseHUD(Rectangle HUD[NOMBRE_CASE_HUD]){
 
     for (int i = 0; i < NOMBRE_CASE_HUD; i++) {
+
         HUD[i].height=50;
         HUD[i].width=50;
         HUD[i].x=10;

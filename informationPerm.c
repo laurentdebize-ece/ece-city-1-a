@@ -13,6 +13,7 @@ void initialisationInfo(INFO *infoPerm){
     infoPerm->capaciteEau = 0;
     infoPerm->capaciteElec = 0;
     infoPerm->prixCentrale = 100000.0f;
+    infoPerm->prixChateauEau = 100000.0f;
     infoPerm->prixHabitation = 1000.0f;
     infoPerm->prixRoute = 10.0f;
 }
