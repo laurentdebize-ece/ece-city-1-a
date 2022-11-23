@@ -44,9 +44,11 @@ typedef struct{
     int eau;
     int compteur;
     int impots;
-    float tempsBanni;
+    float tempsBanniEvolution;
     float compteurEvolution;
     float tempsFuturEvolution;
+    float tempsBanniArgent;
+    float tempsFuturArgent;
 
 }HABITATION;
 

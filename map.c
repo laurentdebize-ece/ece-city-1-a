@@ -19,6 +19,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.viable = 0;
             map[i][j].habitation.evolution = 0;
             map[i][j].habitation.tempsFuturEvolution = 5;
+            map[i][j].habitation.tempsFuturArgent = 5;
             map[i][j].habitation.nombreHabitants = 0;
             map[0][0].idHabitation = 0;
             map[0][0].idCentrale = 0;
@@ -120,6 +121,7 @@ void habitationViable(MAP map[45][35]){
                 else {
                     map[i][j].habitation.viable = 0;
                 }
+
             }
             }
     }
@@ -280,13 +282,21 @@ void habitationViableElec(MAP map[45][35]){
 void evolution(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id != 0 && map[i][j].habitation.evolution < 4 && map[i][j].habitation.viable == 1){
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.evolution < 4){
                 map[i][j].habitation.compteurEvolution++;
-                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
-                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
-                    map[i][j].habitation.tempsBanni=map[i][j].habitation.compteurEvolution;
-                    map[i][j].habitation.evolution++;
+                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturArgent && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniArgent){
+                    map[i][j].habitation.tempsFuturArgent=map[i][j].habitation.tempsFuturArgent+5;
+                    map[i][j].habitation.tempsBanniArgent=map[i][j].habitation.compteurEvolution;
+
                     infoPerm->ECEFlouz = infoPerm->ECEFlouz + map[i][j].habitation.nombreHabitants * 10;
+                }
+                if (map[i][j].habitation.viable == 1){
+
+
+                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniEvolution){
+                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
+                    map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
+                    map[i][j].habitation.evolution++;
                 }
                 for (int k = 0; k < 45; k++) {
                     for (int l = 0; l < 35; l++) {
@@ -299,7 +309,7 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                         }
                     }
                 }
-            }
+            }}
             if(map[i][j].habitation.evolution == 0){
                 map[i][j].habitation.nombreHabitants = 0;
             }
