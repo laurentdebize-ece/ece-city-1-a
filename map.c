@@ -15,10 +15,12 @@ void initialisationMap(MAP map[45][35]){
         for (int j = 0; j < 35; j++) {
             map[i][j].occupe = 0;
             map[i][j].habitation.id = 0;
-            map[i][j].route = 0;
+            map[i][j].route.id = 0;
+            map[i][j].route.visite = 0;
             map[i][j].habitation.viable = 0;
             map[i][j].habitation.evolution = 0;
             map[i][j].habitation.tempsFuturEvolution = 5;
+            map[i][j].habitation.tempsFuturArgent = 5;
             map[i][j].habitation.nombreHabitants = 0;
             map[0][0].idHabitation = 0;
             map[0][0].idCentrale = 0;
@@ -54,53 +56,55 @@ void dessinerMap(Vector2 mapPosition){
     }
 }
 
-void bfsRoute(MAP map[45][35], int i ,int j){
+void ecrireFichierTexte(int s1, int s2, int compteur, Graphe *g){
+    FILE *ifs = fopen("..//graphe.txt", "w");
+    int taille, orientation, ordre, valeur;
 
-    for (int k = -1; k < 5; k++) {
-        for (int l = -1; l < 7; l++) {
-            if (map[i+k][j+l].route == 1 && map[i][j].connexite == 0){
-                map[i][j].connexite = 1;
-                bfsRoute(map,i+k,j+l);
-            }
-            if (map[i+k][j+l].habitation.id!=0){
-                map[i+k][j+l].habitation.connex=1;
-            }
+    if (!ifs) {
+        printf("Erreur de lecture fichier\n");
+        exit(-1);
+    }
+    fprintf(ifs, "%d\n", g->ordre);
+    fprintf(ifs, "%d\n", g->taille);
+    fprintf(ifs, "%d\n", g->orientation);
+    fprintf(ifs, "%d %d %d", s1, s2, compteur);
+
+    fclose(ifs);
+}
+
+int parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *g){
+
+    for (int i = -1; i < 1; i++) {
+        if ((x + i) > 0 && (x + i) < 45 && map[x + i][y].route.id == 1 && i != 0 && map[x + i][y].route.visite == 0){
+            compteur += 1;
+            map[x + i][y].route.visite = 1;
+            parcourirRoute(map,x + i, y, compteur, s1, g);
+        }
+        else if ((x + i) > 0 && (x + i) < 45 && map[x + i][y].habitation.id != 0 && i != 0){
+            ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
+        }
+    }
+    for (int i = -1; i < 1; i++) {
+        if ((y + i) > 0 && (y + i) < 35 && map[x][y + i].route.id == 1 && i != 0 && map[x][y + i].route.visite == 0){
+            compteur += 1;
+            map[x][y - i].route.visite = 1;
+            parcourirRoute(map,x, i + y, compteur, s1, g);
+        }
+        else if ((y + i) > 0 && (y + i) < 35 && map[x][y + i].habitation.id != 0 && i != 0){
+            ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
         }
     }
 }
 
-void connexRoute(MAP map[45][35]){
+void connexRoute(MAP map[45][35], Graphe *g){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            map[i][j].connexite = 0;
-        }
-    }
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-
-            if (map[i][j].centrale.id != 0){
-                for (int k = -1; k < 5; k++) {
-                    for (int l = -1; l < 7; l++) {
-                        if (map[i + k][j + l].route == 1 && map[i][j].connexite == 0){
-                            map[i][j].connexite = 1;
-                            bfsRoute(map,i+k,j+l);
-
-                        }
-                    }
-                }
-            }
-
-
-        }
-    }
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-            if (map[i][j].centrale.id != 0){
-                for (int k = -1; k < 5; k++) {
-                    for (int l = -1; l < 7; l++) {
-                        if (map[i][j].connexite == 1){
-                            bfsRoute(map,i+k,j+l);
-
+            if (map[i][j].habitation.id!=0){
+                for (int k = -1; k < 4; k++) {
+                    for (int l = -1; l < 4; l++) {
+                        if (map[i + k][j + l].route.id ==1){
+                            map[i][j].habitation.connex = 1;
+                            parcourirRoute(map, i+k, j+l, 1, map[i][j].habitation.id, g);
                         }
                     }
                 }
@@ -194,7 +198,6 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
 }
 
 void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
-
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -208,24 +211,25 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                         if (hud[0].etat == 1 && testMapOccupation(i, j, map, Route) && infoPerm->ECEFlouz >= infoPerm->prixRoute) { //conditions sur i et j sinon maison sort de la map
                             infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixRoute;
                             map[i][j].occupe = 1;
-                            map[i][j].route = 1;
+                            map[i][j].route.id = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la map
-                            map[0][0].idHabitation++;
-                            infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixHabitation;
-                            for (int a = 0; a < 3; a++) {
-                                for (int b = 0; b < 3; b++) {
-                                    map[i + a][j + b].occupe = 1;
-                                    map[i+a][j+b].habitation.id = map[0][0].idHabitation;
-                                    habitation[map[0][0].idHabitation].positionX = i;
-                                    habitation[map[0][0].idHabitation].positionY = j;
-                                    habitation[map[0][0].idHabitation].evolution = 0;
-                                    habitation[map[0][0].idHabitation].compteurEvolution = 0;
+                            if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la ma
+                                map[0][0].idHabitation++;
+                                infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixHabitation;
+                                for (int a = 0; a < 3; a++) {
+                                    for (int b = 0; b < 3; b++) {
+                                        map[i + a][j + b].occupe = 1;
+                                        map[i + a][j + b].habitation.id = map[0][0].idHabitation;
+                                        habitation[map[0][0].idHabitation].positionX = i;
+                                        habitation[map[0][0].idHabitation].positionY = j;
+                                        habitation[map[0][0].idHabitation].evolution = 0;
+                                        habitation[map[0][0].idHabitation].compteurEvolution = 0;
+                                    }
                                 }
                             }
-                            }
                         }
+
                         if (i < 45 - 3 && j < 35 - 5) {
                             if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && infoPerm->ECEFlouz >= infoPerm->prixCentrale) { //conditions sur i et j sinon centrale sort de la map
                                 map[0][0].idCentrale++;
@@ -278,29 +282,37 @@ void habitationViableElec(MAP map[45][35]){
 
 }
 
-
 void evolution(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id!=0 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.evolution < 4){
                 map[i][j].habitation.compteurEvolution++;
-                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
-                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
-                    map[i][j].habitation.tempsBanni=map[i][j].habitation.compteurEvolution;
-                    map[i][j].habitation.evolution++;
+                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturArgent && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniArgent){
+                    map[i][j].habitation.tempsFuturArgent=map[i][j].habitation.tempsFuturArgent+5;
+                    map[i][j].habitation.tempsBanniArgent=map[i][j].habitation.compteurEvolution;
+
                     infoPerm->ECEFlouz = infoPerm->ECEFlouz + map[i][j].habitation.nombreHabitants * 10;
+                }
+                if (map[i][j].habitation.viable == 1){
+
+
+                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniEvolution){
+                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
+                    map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
+                    map[i][j].habitation.evolution++;
                 }
                 for (int k = 0; k < 45; k++) {
                     for (int l = 0; l < 35; l++) {
                         if (map[k][l].habitation.id == map[i][j].habitation.id){
                             if (map[k][l].habitation.evolution < map[i][j].habitation.evolution){
                                 map[k][l].habitation.evolution = map[i][j].habitation.evolution;
+                                map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
                             }
 
                         }
                     }
                 }
-            }
+            }}
             if(map[i][j].habitation.evolution == 0){
                 map[i][j].habitation.nombreHabitants = 0;
             }
@@ -341,7 +353,7 @@ void dessinerElement(MAP map[45][35]){ //Ajouter une condition pour les différe
                     DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, PINK);
                 }
             }
-            if (map[i][j].route == 1){
+            if (map[i][j].route.id == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLACK);
             }
             if(map[i][j].centrale.id != 0){
@@ -368,7 +380,17 @@ void nombreHabitant(MAP map[45][35]){
     map[0][0].nombreTotalHabitant = habitantTotal;
 }
 
+void initialiserGraphe(Graphe *g){
+    g->orientation = 0;
+    g->ordre = 0;
+    g->taille = 0;
+}
+
 void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
+
+    Graphe *graphe = lire_graphe("..//graphe.txt");
+    initialiserGraphe(graphe);
+
     Vector2 mapPosition = initialisationPositionMap();
 
     Rectangle HUD[NOMBRE_CASE_HUD];
@@ -395,10 +417,13 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
-        nombreHabitant(map);
-        connexRoute(map);
-        habitationViableElec(map);
-        habitationViable(map);
+
+        //nombreHabitant(map);
+        connexRoute(map, graphe);
+        //habitationViableElec(map);
+        //habitationViable(map);
+
+        //Map
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map,&infoPerm);
         placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale);

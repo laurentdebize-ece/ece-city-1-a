@@ -11,6 +11,7 @@
 #include "element.h"
 #include "time.h"
 #include "informationPerm.h"
+#include "Graphe/Graphe.h"
 #include "menu.h"
 
 #define LARGUEUR 1024
@@ -25,12 +26,11 @@ enum type{NONOCCUPE, Route,Habitation, Centrale, ChateauEau};
 typedef struct {
 
     int occupe; //Savoir si il y a deja quelque chose sur la case (ENUM)
-    int route;
-    int connexite;
     int idHabitation;
     int idCentrale;
     int idChateauEau;
     int nombreTotalHabitant;
+    ROUTE route;
     HABITATION habitation;
     CHATEAUEAU chateaueau;
     CENTRALE centrale;

@@ -1,7 +1,3 @@
-//
-// Created by Erwan Pillard on 23/11/2022.
-//
-
 #include "Graphe.h"
 #include "fifo.h"
 
@@ -65,7 +61,6 @@ Graphe *CreerGraphe(int ordre) {
     }
     return Newgraphe;
 }
-
 
 /* La construction du reseau peut se faire a partir d'un fichier dont le nom est passe en parametre
 Le fichier contient : ordre, taille,orientation (0 ou 1)et liste des arcs */
