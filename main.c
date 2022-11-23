@@ -5,9 +5,6 @@
 int main(){
     int choixmode = 0;
 
-    accueil();
-    modeJeu(&choixmode);
-
     MAP map[45][35];
     HUD hud[NOMBRE_CASE_HUD];
     INFO infoPerm;
@@ -25,7 +22,9 @@ int main(){
 
 
     //Fonction executé
-    mapNiveau0(map, hud, habitation, centrale, infoPerm);
+    //accueil();
+    //modeJeu(&choixmode);
+    mapECECITY(map, hud, habitation, centrale, infoPerm);
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){
             printf("%d ",map[i][j].habitation.viable);

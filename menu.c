@@ -1,13 +1,9 @@
 #include "menu.h"
 #include "raylib.h"
 
-int accueil(void){
-
-    const int screenWidth = 1024;
-    const int screenHeight = 768;
+void accueil(void){
     bool fin;
 
-    InitWindow(screenWidth, screenHeight, "ACCUEIL");
     Texture2D texture = LoadTexture("../accueil2.png");
 
     while (!WindowShouldClose() && !fin)
@@ -28,19 +24,12 @@ int accueil(void){
 
     }
     UnloadTexture(texture);
-    CloseWindow();
-
-    return 0;
-
 }
 
-int modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
+void modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
 {
-    const int screenWidth = 1024;
-    const int screenHeight = 768;
     bool fin;
 
-    InitWindow(screenWidth, screenHeight, "MENU");
     Texture2D texture = LoadTexture("../imgmenu.png");
 
     while (!WindowShouldClose() && !fin)
@@ -97,7 +86,4 @@ int modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
     }
 
     UnloadTexture(texture);
-    CloseWindow();
-
-    return 0;
 }
