@@ -1,6 +1,6 @@
 #include "map.h"
 #include "menu.h"
-
+#include "Graphe/Graphe.h"
 
 int main(){
     int choixmode = 0;
@@ -34,5 +34,4 @@ int main(){
     printf("%d\n",map[0][0].habitation.connex);
     //infoPerm.ECEFlouz = infoPerm.ECEFlouz -1000;
     printf("%f ",infoPerm.ECEFlouz);
-
 }
