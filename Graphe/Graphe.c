@@ -1,7 +1,3 @@
-//
-// Created by Erwan Pillard on 23/11/2022.
-//
-
 #include "Graphe.h"
 #include "fifo.h"
 

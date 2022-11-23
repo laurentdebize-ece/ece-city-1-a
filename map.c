@@ -211,21 +211,22 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             map[i][j].route = 1;
                         }
                         if (i < 45 - 2 && j < 35 - 2){
-                        if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la map
-                            map[0][0].idHabitation++;
-                            infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixHabitation;
-                            for (int a = 0; a < 3; a++) {
-                                for (int b = 0; b < 3; b++) {
-                                    map[i + a][j + b].occupe = 1;
-                                    map[i+a][j+b].habitation.id = map[0][0].idHabitation;
-                                    habitation[map[0][0].idHabitation].positionX = i;
-                                    habitation[map[0][0].idHabitation].positionY = j;
-                                    habitation[map[0][0].idHabitation].evolution = 0;
-                                    habitation[map[0][0].idHabitation].compteurEvolution = 0;
+                            if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la ma
+                                map[0][0].idHabitation++;
+                                infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixHabitation;
+                                for (int a = 0; a < 3; a++) {
+                                    for (int b = 0; b < 3; b++) {
+                                        map[i + a][j + b].occupe = 1;
+                                        map[i + a][j + b].habitation.id = map[0][0].idHabitation;
+                                        habitation[map[0][0].idHabitation].positionX = i;
+                                        habitation[map[0][0].idHabitation].positionY = j;
+                                        habitation[map[0][0].idHabitation].evolution = 0;
+                                        habitation[map[0][0].idHabitation].compteurEvolution = 0;
+                                    }
                                 }
                             }
-                            }
                         }
+
                         if (i < 45 - 3 && j < 35 - 5) {
                             if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && infoPerm->ECEFlouz >= infoPerm->prixCentrale) { //conditions sur i et j sinon centrale sort de la map
                                 map[0][0].idCentrale++;
@@ -272,17 +273,14 @@ void habitationViableElec(MAP map[45][35]){
             else if(map[0][0].nombreTotalHabitant < map[0][0].idCentrale * 5000){
                 map[i][j].habitation.elec = 1;
             }
-
         }
     }
-
 }
-
 
 void evolution(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id!=0 && map[i][j].habitation.evolution<4 && map[i][j].habitation.viable==1){
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.evolution < 4 && map[i][j].habitation.viable == 1){
                 map[i][j].habitation.compteurEvolution++;
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanni){
                     map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
@@ -295,6 +293,7 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                         if (map[k][l].habitation.id == map[i][j].habitation.id){
                             if (map[k][l].habitation.evolution < map[i][j].habitation.evolution){
                                 map[k][l].habitation.evolution = map[i][j].habitation.evolution;
+                                map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
                             }
 
                         }
@@ -391,6 +390,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
             StartTimer(&timer, lifetime);
 
         }
+
         mouseposition = GetMousePosition();
 
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
