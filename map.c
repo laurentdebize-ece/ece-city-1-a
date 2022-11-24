@@ -338,36 +338,36 @@ void evolution(MAP map[45][35], INFO *infoPerm){
 }
 
 
-void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Texture2D immeuble, Texture2D gratteciel){ //Ajouter une condition pour les différents niveaux (0 1 2)
+void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Texture2D immeuble, Texture2D gratteciel, Texture2D terrain){ //Ajouter une condition pour les différents niveaux (0 1 2)
 
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if(map[i][j].type != 0){
                 if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
 
-                    DrawTexture(cabane, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
+                    DrawTexture(terrain, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
 
-                    //DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, GREEN);
                 }
                 if (map[i][j].habitation.evolution==CABANE){
 
+                    DrawTexture(cabane, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
 
-                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, RED);
+                    //DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, RED);
                 }
                 if (map[i][j].habitation.evolution==MAISON){
 
                     DrawTexture(maison, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
-                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, VIOLET);
+                    //DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, VIOLET);
                 }
                 if (map[i][j].habitation.evolution==IMMEUBLE){
 
                     DrawTexture(immeuble, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
-                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLUE);
+                    //DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLUE);
                 }
                 if (map[i][j].habitation.evolution==GRATTE_CIEL){
 
                     DrawTexture(gratteciel, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
-                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, PINK);
+                    //DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, PINK);
                 }
 
             }
@@ -414,11 +414,13 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
     Vector2 mapPosition = initialisationPositionMap();
 
+    Texture2D terrain;
     Texture2D cabane;
     Texture2D maison;
     Texture2D immeuble;
     Texture2D gratteciel;
 
+    terrain = LoadTexture("../images/Constructions /terrainvague2.png");
     cabane = LoadTexture("../images/Constructions /cabane2.png");
     maison = LoadTexture("../images/Constructions /maison2.png");
     immeuble = LoadTexture("../images/Constructions /immeuble2.png");
@@ -459,7 +461,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map,&infoPerm);
         placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale);
-        dessinerElement(map,cabane,maison,immeuble,gratteciel); //Dessine toutes les maisons enregistrées en mémoire
+        dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain); //Dessine toutes les maisons enregistrées en mémoire
         affichageInfo(&infoPerm); //Affichage informations de la partie
 
         EndDrawing();
