@@ -25,6 +25,7 @@ enum type{NONOCCUPE, Route,Habitation, Centrale, ChateauEau};
 
 typedef struct {
 
+    int type;
     int occupe; //Savoir si il y a deja quelque chose sur la case (ENUM)
     int idHabitation;
     int idCentrale;
