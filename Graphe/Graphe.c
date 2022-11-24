@@ -97,6 +97,15 @@ Graphe *lire_graphe(char *nomFichier) {
     return graphe;
 }
 
+int lireGraphe(int s1, int s2, int valeur, Graphe *graphe) {
+    // creer les aretes du graphe
+    graphe->pSommet = CreerArete(graphe->pSommet, s1, s2, valeur);
+
+    if (!graphe->orientation){
+        graphe->pSommet = CreerArete(graphe->pSommet, s2, s1, valeur);
+    }
+}
+
 /*affichage du graphe avec les successeurs de chaque sommet */
 void graphe_afficher(Graphe *graphe) {
     printf("graphe\n");
