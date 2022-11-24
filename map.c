@@ -92,8 +92,8 @@ void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe 
             return parcourirRoute(map,x + i, y, compteur, s1, g);
         }
         if ((x + i) > 0 && (x + i) < 45 && i != 0 && map[x + i][y].habitation.id != s1 && map[x + i][y].habitation.id != 0){
-            //printf("%d %d %d", s1, map[x + i][y].habitation.id, compteur);
-            ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
+            printf("%d %d %d\n", s1, map[x + i][y].habitation.id, compteur);
+            //ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
         }
     }
     for (int i = -1; i < 2; i++) {
@@ -105,9 +105,8 @@ void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe 
             return parcourirRoute(map,x, y + i, compteur, s1, g);
         }
         if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].habitation.id != 0 && map[x][y + i].habitation.id != s1){
-            //printf("%d %d %d", s1, map[x][y + i].habitation.id, compteur);
-
-            ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
+            printf("%d %d %d\n", s1, map[x][y + i].habitation.id, compteur);
+            //ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
         }
     }
 }
@@ -233,7 +232,7 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
     }
 }
 
-void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
+void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], Graphe *graphe){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -248,6 +247,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                             infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixRoute;
                             map[i][j].occupe = 1;
                             map[i][j].route.id = 1;
+                            connexRoute(map, graphe);
                         }
                         if (i < 45 - 2 && j < 35 - 2){
                             if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la ma
@@ -262,6 +262,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         habitation[map[0][0].idHabitation].positionY = j;
                                         habitation[map[0][0].idHabitation].evolution = 0;
                                         habitation[map[0][0].idHabitation].compteurEvolution = 0;
+                                        connexRoute(map, graphe);
                                     }
                                 }
                             }
@@ -278,6 +279,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i][j].type = Centrale;
                                         centrale[map[0][0].idCentrale].positionX = i;
                                         centrale[map[0][0].idCentrale].positionY = j;
+                                        connexRoute(map, graphe);
                                     }
                                 }
                             }
@@ -294,6 +296,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i+a][j+b].chateaueau.id = map[0][0].idChateauEau;
                                         centrale[map[0][0].idChateauEau].positionX = i;
                                         centrale[map[0][0].idChateauEau].positionY = j;
+                                        connexRoute(map, graphe);
                                     }
                                 }
                             }
@@ -524,14 +527,20 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
 
         //nombreHabitant(map);
-        connexRoute(map, graphe);
+        //connexRoute(map, graphe);
         //habitationViableElec(map);
         //habitationViable(map);
 
         //Map
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map,&infoPerm);
-        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale);
+        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale, graphe);
+        for (int i = 0; i < 45; i++) {
+            for (int j = 0; j < 35; j++) {
+                map[i][j].habitation.visite = 0;
+                map[i][j].route.visite = 0;
+            }
+        }
         dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain); //Dessine toutes les maisons enregistrées en mémoire
         affichageInfo(&infoPerm); //Affichage informations de la partie
 
