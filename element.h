@@ -49,6 +49,7 @@ typedef struct{
     float tempsFuturEvolution;
     float tempsBanniArgent;
     float tempsFuturArgent;
+    int visite;
 
 }HABITATION;
 

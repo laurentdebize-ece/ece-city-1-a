@@ -15,6 +15,7 @@ void initialisationMap(MAP map[45][35]){
         for (int j = 0; j < 35; j++) {
             map[i][j].occupe = 0;
             map[i][j].habitation.id = 0;
+            map[i][j].type = 0;
             map[i][j].route.id = 0;
             map[i][j].route.visite = 0;
             map[i][j].habitation.viable = 0;
@@ -22,6 +23,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.tempsFuturEvolution = 5;
             map[i][j].habitation.tempsFuturArgent = 5;
             map[i][j].habitation.nombreHabitants = 0;
+            map[i][j].habitation.visite = 0;
             map[0][0].idHabitation = 0;
             map[0][0].idCentrale = 0;
             map[0][0].idChateauEau = 0;
@@ -31,7 +33,6 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.connex = 0;
             map[i][j].habitation.elec = 1;
             map[i][j].habitation.eau = 1;
-            //ap[i][j].connexite = 0;
 
         }
     }
@@ -64,33 +65,31 @@ void ecrireFichierTexte(int s1, int s2, int compteur, Graphe *g){
         printf("Erreur de lecture fichier\n");
         exit(-1);
     }
-    fprintf(ifs, "%d\n", g->ordre);
-    fprintf(ifs, "%d\n", g->taille);
-    fprintf(ifs, "%d\n", g->orientation);
     fprintf(ifs, "%d %d %d", s1, s2, compteur);
 
     fclose(ifs);
 }
 
 int parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *g){
-
     for (int i = -1; i < 1; i++) {
-        if ((x + i) > 0 && (x + i) < 45 && map[x + i][y].route.id == 1 && i != 0 && map[x + i][y].route.visite == 0){
+        if ((x + i) > 0 && (x + i) < 45 && i != 0 && map[x + i][y].route.id == 1 && map[x + i][y].route.visite == 0){
             compteur += 1;
             map[x + i][y].route.visite = 1;
             parcourirRoute(map,x + i, y, compteur, s1, g);
         }
-        else if ((x + i) > 0 && (x + i) < 45 && map[x + i][y].habitation.id != 0 && i != 0){
+        if ((x + i) > 0 && (x + i) < 45 && i != 0 && map[x + i][y].habitation.id != s1 && map[x + i][y].habitation.id != 0){
+            //printf("%d %d %d", s1, map[x + i][y].habitation.id, compteur);
             ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
         }
     }
     for (int i = -1; i < 1; i++) {
-        if ((y + i) > 0 && (y + i) < 35 && map[x][y + i].route.id == 1 && i != 0 && map[x][y + i].route.visite == 0){
+        if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].route.id == 1 && map[x][y + i].route.visite == 0){
             compteur += 1;
-            map[x][y - i].route.visite = 1;
+            map[x][y + i].route.visite = 1;
             parcourirRoute(map,x, i + y, compteur, s1, g);
         }
-        else if ((y + i) > 0 && (y + i) < 35 && map[x][y + i].habitation.id != 0 && i != 0){
+        if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].habitation.id != 0 && map[x][y + i].habitation.id != s1){
+            //printf("%d %d %d", s1, map[x][y + i].habitation.id, compteur);
             ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
         }
     }
@@ -99,12 +98,14 @@ int parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *
 void connexRoute(MAP map[45][35], Graphe *g){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id!=0){
+            if (map[i][j].habitation.id!=0 && map[i][j].habitation.visite == 0){
                 for (int k = -1; k < 4; k++) {
                     for (int l = -1; l < 4; l++) {
-                        if (map[i + k][j + l].route.id ==1){
+                        if (map[i + l][j + k].route.id ==1){
                             map[i][j].habitation.connex = 1;
-                            parcourirRoute(map, i+k, j+l, 1, map[i][j].habitation.id, g);
+                            map[i+l][j+k].route.visite = 1;
+                            map[i][j].habitation.visite = 1;
+                            parcourirRoute(map, i+l, j+k, 1, map[i][j].habitation.id, g);
                         }
                     }
                 }
@@ -221,6 +222,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                     for (int b = 0; b < 3; b++) {
                                         map[i + a][j + b].occupe = 1;
                                         map[i + a][j + b].habitation.id = map[0][0].idHabitation;
+                                        map[i][j].type = Habitation;
                                         habitation[map[0][0].idHabitation].positionX = i;
                                         habitation[map[0][0].idHabitation].positionY = j;
                                         habitation[map[0][0].idHabitation].evolution = 0;
@@ -238,6 +240,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                     for (int b = 0; b < 6; b++) {
                                         map[i + a][j + b].occupe = 1;
                                         map[i+a][j+b].centrale.id = map[0][0].idCentrale;
+                                        map[i][j].type = Centrale;
                                         centrale[map[0][0].idCentrale].positionX = i;
                                         centrale[map[0][0].idCentrale].positionY = j;
                                     }
@@ -252,6 +255,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                 for (int a = 0; a < 4; a++) {
                                     for (int b = 0; b < 6; b++) {
                                         map[i + a][j + b].occupe = 1;
+                                        map[i][j].type = ChateauEau;
                                         map[i+a][j+b].chateaueau.id = map[0][0].idChateauEau;
                                         centrale[map[0][0].idChateauEau].positionX = i;
                                         centrale[map[0][0].idChateauEau].positionY = j;
@@ -338,7 +342,7 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
 
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if(map[i][j].habitation.id != 0){
+            if(map[i][j].type != 0){
                 if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
 
                     DrawTexture(cabane, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
@@ -369,6 +373,9 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
             }
             if (map[i][j].route.id == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLACK);
+                if (map[i][j].route.visite == 1){
+                    DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, ORANGE);
+                }
             }
             if(map[i][j].centrale.id != 0){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, YELLOW);
@@ -378,11 +385,7 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLUE);
 
             }
-
-
         }
-
-
     }
 }
 
@@ -401,7 +404,7 @@ void nombreHabitant(MAP map[45][35]){
 void initialiserGraphe(Graphe *g){
     g->orientation = 0;
     g->ordre = 0;
-    g->taille = 0;
+    g->taille = 3;
 }
 
 void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
