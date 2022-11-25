@@ -97,17 +97,18 @@ Graphe *lire_graphe(char *nomFichier) {
     return graphe;
 }
 
-void lireGraphe(TAB_GRAPHE tab_graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe) {
+void lireGraphe(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe) {
 
-    graphe = CreerGraphe(graphe->ordre);
+    //graphe = CreerGraphe(graphe->ordre);
 
-    for (int i = 0; i < tab_graphe[0].last_id; i++) {
+    for (int i = graphe->taille; i < tab_Graphe[0].last_id; i++) {
         // creer les aretes du graphe
-        graphe->pSommet = CreerArete(graphe->pSommet, tab_graphe[i].s1 - 1, tab_graphe[i].s2 - 1, tab_graphe[i].valeur);
+        graphe->pSommet = CreerArete(graphe->pSommet, tab_Graphe[i].s1, tab_Graphe[i].s2, tab_Graphe[i].valeur);
 
         if (!graphe->orientation){
-            graphe->pSommet = CreerArete(graphe->pSommet, tab_graphe[i].s2 - 1, tab_graphe[i].s1 - 1, tab_graphe[i].valeur);
+            graphe->pSommet = CreerArete(graphe->pSommet, tab_Graphe[i].s2, tab_Graphe[i].s1, tab_Graphe[i].valeur);
         }
+        graphe->taille++;
     }
 }
 
@@ -121,10 +122,11 @@ void graphe_afficher(Graphe *graphe) {
         printf("non oriente\n");
 
     printf("ordre = %d\n", graphe->ordre);
+    printf("taille = %d\n", graphe->taille);
 
     printf("listes d'adjacence :\n");
 
-    for (int i = 0; i < graphe->ordre; i++) {
+    for (int i = 1; i <= graphe->ordre; i++) {
         afficher_successeurs(graphe->pSommet, i);
         printf("\n");
     }

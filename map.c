@@ -27,6 +27,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.tempsFuturArgent = 5;
             map[i][j].habitation.nombreHabitants = 0;
             map[i][j].habitation.visite = 0;
+            map[0][0].id = 0;
             map[0][0].idHabitation = 0;
             map[0][0].idCentrale = 0;
             map[0][0].idChateauEau = 0;
@@ -34,8 +35,8 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].centrale.id = 0;
             map[i][j].chateaueau.id = 0;
             map[i][j].habitation.connex = 0;
-            map[i][j].habitation.elec = 1;
-            map[i][j].habitation.eau = 1;
+            map[i][j].habitation.viableElec = 1;
+            map[i][j].habitation.viableEau = 1;
 
         }
     }
@@ -52,19 +53,20 @@ Rectangle initialisationCaseMAP(){
     return MAP;
 }
 
-void initialiserGraphe(Graphe *g, TAB_GRAPHE tabGraphe[NOMBRE_ARETES_TABGRAPHE]){
-    g->orientation = 0;
-    g->ordre = 0;
-    g->taille = 0;
-
+void initialiserTABGRAPHE(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
     for (int i = 0; i < NOMBRE_ARETES_TABGRAPHE; i++) {
-        tabGraphe[i].s1 = 0;
-        tabGraphe[i].s2 = 0;
-        tabGraphe[i].valeur = 0;
-        tabGraphe[i].last_id = 0;
+        tab_Graphe[i].s1 = 0;
+        tab_Graphe[i].s2 = 0;
+        tab_Graphe[i].valeur = 0;
+        tab_Graphe[i].last_id = 0;
     }
 }
 
+void initialiserGraphe(Graphe *g){
+    g->orientation = 0;
+    g->ordre = 0;
+    g->taille = 0;
+}
 
 void dessinerMap(Vector2 mapPosition){
     for (int i = 0; i < 45; i++) {
@@ -99,7 +101,7 @@ void ecrireFichierTexte(int s1, int s2, int compteur, Graphe *g){
     fclose(ifs);
 }
 
-int verifDoublonArete(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], int s1, int s2, int valeur, Graphe *g){
+int verifDoublonArete(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], int s1, int s2, int valeur){
     for (int i = 0; i < tab_Graphe[0].last_id + 1; i++) {
         if ((tab_Graphe[i].s1 == s1 && tab_Graphe[i].s2 == s2) || (tab_Graphe[i].s1 == s2 && tab_Graphe[i].s2 == s1)){
             if (valeur <= tab_Graphe[i].valeur){
@@ -112,7 +114,6 @@ int verifDoublonArete(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], int s1, in
     tab_Graphe[tab_Graphe[0].last_id].s2 = s2;
     tab_Graphe[tab_Graphe[0].last_id].valeur = valeur;
     tab_Graphe[0].last_id += 1;
-    g->taille++;
 }
 
 int verifNonAdjacentRouteMaison(MAP map[45][35], int x, int y, int numHabitation){
@@ -136,7 +137,13 @@ void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe 
             //printf("%d %d %d\n", s1, map[x + i][y].habitation.id, compteur);
             //ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
             //lireGraphe(s1, map[x + i][y].habitation.id, compteur, g);
-            verifDoublonArete(tab_Graphe, s1, map[x + i][y].habitation.id, compteur, g);
+            verifDoublonArete(tab_Graphe, s1, map[x + i][y].habitation.id, compteur);
+        }
+        else if ((x + i) > 0 && (x + i) < 45 && i != 0 && map[x + i][y].centrale.id != 0){
+            verifDoublonArete(tab_Graphe, s1, map[x + i][y].centrale.id, compteur);
+        }
+        else if ((x + i) > 0 && (x + i) < 45 && i != 0 && map[x + i][y].chateaueau.id != 0){
+            verifDoublonArete(tab_Graphe, s1, map[x + i][y].chateaueau.id, compteur);
         }
     }
     for (int i = -1; i < 2; i++) {
@@ -146,11 +153,17 @@ void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe 
 
             parcourirRoute(map,x, y + i, compteur+1, s1, g, tab_Graphe, numHabitation);
         }
-        else if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].habitation.id != 0 && map[x][y + i].habitation.id != s1){
+        else if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].habitation.id != s1 && map[x][y + i].habitation.id != 0){
             //printf("%d %d %d\n", s1, map[x][y + i].habitation.id, compteur);
             //ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
             //lireGraphe(s1, map[x][y + i].habitation.id, compteur, g);
-            verifDoublonArete(tab_Graphe, s1, map[x][y + i].habitation.id, compteur, g);
+            verifDoublonArete(tab_Graphe, s1, map[x][y + i].habitation.id, compteur);
+        }
+        else if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].centrale.id != 0){
+            verifDoublonArete(tab_Graphe, s1, map[x][y + i].centrale.id, compteur);
+        }
+        else if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].chateaueau.id != 0){
+            verifDoublonArete(tab_Graphe, s1, map[x][y + i].chateaueau.id, compteur);
         }
     }
 }
@@ -199,20 +212,22 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
     }
 }
 
-void habitationViable(MAP map[45][35]){
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id!=0){
-                if (map[i][j].habitation.elec == 1 && map[i][j].habitation.connex == 1){
-                    map[i][j].habitation.viable = 1;
-                }
-                else {
-                    map[i][j].habitation.viable = 0;
-                }
-            }
-            }
-    }
+void viabiliteElectricite(Graphe *graphe,HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
+    for (int i = 0; i < NOMBRE_HABITATION_MAX; i++) {
+        if (habitation[i].id == 1){
+            struct Arc *arc = graphe->pSommet[i]->arc;
+            while (arc != NULL || !(habitation[i].viable)){
 
+                int s = arc->sommet;
+                if (centrale[s].id == 1 && centrale[s].capacite >= habitation[i].nombreHabitants){
+                    centrale[s].capacite -= habitation[i].nombreHabitants;
+                    habitation[i].viable = 1;
+                    printf("ok");
+                }
+                arc = arc->arc_suivant;
+            }
+        }
+    }
 }
 
 int testMapOccupation(int i, int j, MAP map[45][35], int type){ //type habitation,central,...
@@ -281,7 +296,7 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
     }
 }
 
-void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], Graphe *graphe, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
+void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX],Graphe *graphe, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -300,18 +315,21 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                         }
                         if (i < 45 - 2 && j < 35 - 2){
                             if (hud[1].etat == 1 && testMapOccupation(i, j, map, Habitation) == 1 && infoPerm->ECEFlouz >= infoPerm->prixHabitation) {//conditions sur i et j sinon maison sort de la ma
+                                map[0][0].id++;
                                 map[0][0].idHabitation++;
                                 infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixHabitation;
                                 graphe->ordre++;
                                 for (int a = 0; a < 3; a++) {
                                     for (int b = 0; b < 3; b++) {
                                         map[i + a][j + b].occupe = 1;
-                                        map[i + a][j + b].habitation.id = map[0][0].idHabitation;
+                                        map[i + a][j + b].habitation.id = map[0][0].id;
                                         map[i][j].type = Habitation;
-                                        habitation[map[0][0].idHabitation].positionX = i;
-                                        habitation[map[0][0].idHabitation].positionY = j;
-                                        habitation[map[0][0].idHabitation].evolution = 0;
-                                        habitation[map[0][0].idHabitation].compteurEvolution = 0;
+
+                                        habitation[map[0][0].id].positionX = i;
+                                        habitation[map[0][0].id].positionY = j;
+                                        habitation[map[0][0].id].evolution = 0;
+                                        habitation[map[0][0].id].compteurEvolution = 0;
+                                        habitation[map[0][0].id].id = 1;
 
                                         connexRoute(map, graphe, tab_Graphe);
                                     }
@@ -321,16 +339,17 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 
                         if (i < 45 - 3 && j < 35 - 5) {
                             if (hud[2].etat == 1 && testMapOccupation(i, j, map, Centrale) == 1 && infoPerm->ECEFlouz >= infoPerm->prixCentrale) { //conditions sur i et j sinon centrale sort de la map
-                                map[0][0].idCentrale++;
+                                map[0][0].id++;
                                 infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixCentrale;
                                 graphe->ordre++;
                                 for (int a = 0; a < 4; a++) {
                                     for (int b = 0; b < 6; b++) {
                                         map[i + a][j + b].occupe = 1;
-                                        map[i+a][j+b].centrale.id = map[0][0].idCentrale;
+                                        map[i+a][j+b].centrale.id = map[0][0].id;
                                         map[i][j].type = Centrale;
-                                        centrale[map[0][0].idCentrale].positionX = i;
-                                        centrale[map[0][0].idCentrale].positionY = j;
+                                        centrale[map[0][0].id].positionX = i;
+                                        centrale[map[0][0].id].positionY = j;
+                                        centrale[map[0][0].id].id = 1; // id = 1  si il y a une centrale à cette case
 
                                         connexRoute(map, graphe, tab_Graphe);
                                     }
@@ -340,16 +359,17 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 
                         if (i < 45 - 3 && j < 35 - 5) {
                             if (hud[3].etat == 1 && testMapOccupation(i, j, map, ChateauEau) == 1 && infoPerm->ECEFlouz >= infoPerm->prixChateauEau) { //conditions sur i et j sinon centrale sort de la map
-                                map[0][0].idChateauEau++;
+                                map[0][0].id++;
                                 infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixChateauEau;
                                 graphe->ordre++;
                                 for (int a = 0; a < 4; a++) {
                                     for (int b = 0; b < 6; b++) {
                                         map[i + a][j + b].occupe = 1;
                                         map[i][j].type = ChateauEau;
-                                        map[i+a][j+b].chateaueau.id = map[0][0].idChateauEau;
-                                        centrale[map[0][0].idChateauEau].positionX = i;
-                                        centrale[map[0][0].idChateauEau].positionY = j;
+                                        map[i+a][j+b].chateaueau.id = map[0][0].id;
+                                        chateau[map[0][0].id].positionX = i;
+                                        chateau[map[0][0].id].positionY = j;
+                                        chateau[map[0][0].id].id = 1; // id = 1  si il y a un chateau d'eau à cette case
 
                                         connexRoute(map, graphe, tab_Graphe);
                                     }
@@ -361,22 +381,6 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
             }
         }
     }
-}
-
-void habitationViableElec(MAP map[45][35]){
-
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-            if(map[0][0].nombreTotalHabitant > map[0][0].idCentrale * 5000){
-                map[i][j].habitation.elec = 0;
-            }
-            else if(map[0][0].nombreTotalHabitant < map[0][0].idCentrale * 5000){
-                map[i][j].habitation.elec = 1;
-            }
-
-        }
-    }
-
 }
 
 void evolution(MAP map[45][35], INFO *infoPerm){
@@ -531,11 +535,13 @@ void test(MAP map[45][35]){
 */
 }
 
-void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
+void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX],INFO infoPerm){
 
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
-    Graphe *graphe = CreerGraphe(0);
-    initialiserGraphe(graphe, tab_Graphe);
+    initialiserTABGRAPHE(tab_Graphe);
+
+    Graphe *graphe = CreerGraphe(NOMBRE_ARETES_TABGRAPHE);
+    initialiserGraphe(graphe);
 
     Vector2 mapPosition = initialisationPositionMap();
 
@@ -582,15 +588,15 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         HUDcollision(hud, HUD, mouseposition); //Test si surpassage de case et si clic dans une des cases
 
         //nombreHabitant(map);
-        connexRoute(map, graphe, tab_Graphe);
+        //connexRoute(map, graphe, tab_Graphe);
+        lireGraphe(tab_Graphe, graphe);
         //habitationViableElec(map);
         //habitationViable(map);
 
         //Map
-
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map,&infoPerm);
-        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale, graphe, tab_Graphe);
+        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale, chateau, graphe, tab_Graphe);
         for (int i = 0; i < 45; i++) {
             for (int j = 0; j < 35; j++) {
                 map[i][j].habitation.visite = 0;
@@ -600,12 +606,12 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain); //Dessine toutes les maisons enregistrées en mémoire
         affichageInfo(&infoPerm); //Affichage informations de la partie
 
-        if (IsKeyDown(KEY_A)){
-            lireGraphe(tab_Graphe, graphe);
-            graphe_afficher(graphe);
-        }
-
         EndDrawing();
+
+        if (IsKeyPressed(KEY_A)){
+            viabiliteElectricite(graphe, habitation, centrale);
+            //graphe_afficher(graphe);
+        }
     }
 
     UnloadTexture(fondmap);
@@ -615,10 +621,9 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
     UnloadTexture(gratteciel);
 
     CloseWindow();
-
-    for (int i = 0; i < tab_Graphe[0].last_id; i++) {
+/*
+    for (int i = 0; i < NOMBRE_ARETES_TABGRAPHE; i++) {
         printf("%d %d %d\n", tab_Graphe[i].s1, tab_Graphe[i].s2, tab_Graphe[i].valeur);
-    }
-
+    }*/
 }
 

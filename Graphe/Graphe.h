@@ -21,6 +21,7 @@ struct Sommet
 {
     struct Arc* arc;
     int valeur;
+    int type;
     int couleur;
     int distanceS0;
 
