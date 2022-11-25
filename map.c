@@ -26,6 +26,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.tempsFuturEvolution = 5;
             map[i][j].habitation.tempsFuturArgent = 5;
             map[i][j].habitation.nombreHabitants = 0;
+            map[i][j].habitation.centraleQuiAlimente = 0;
             map[i][j].habitation.visite = 0;
             map[0][0].id = 0;
             map[0][0].idHabitation = 0;
@@ -39,6 +40,13 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.viableEau = 1;
 
         }
+    }
+}
+
+void initialiserElement(ELEMENT element[NOMBRE_MAX_ELEMENT]){
+    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
+        element[i].habitation.id = 0;
+        element[i].habitation.evolution = 0;
     }
 }
 
@@ -212,17 +220,17 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
     }
 }
 
-void viabiliteElectricite(Graphe *graphe,HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX]){
+void viabiliteElectricite(Graphe *graphe, ELEMENT element[NOMBRE_MAX_ELEMENT]){
     for (int i = 0; i < NOMBRE_HABITATION_MAX; i++) {
-        if (habitation[i].id == 1){
+        if (element[i].habitation.id == 1){
             struct Arc *arc = graphe->pSommet[i]->arc;
-            while (arc != NULL || !(habitation[i].viable)){
+            while (arc != NULL && !(element[i].habitation.viableElec)){
 
                 int s = arc->sommet;
-                if (centrale[s].id == 1 && centrale[s].capacite >= habitation[i].nombreHabitants){
-                    centrale[s].capacite -= habitation[i].nombreHabitants;
-                    habitation[i].viable = 1;
-                    printf("ok");
+                if (element[s].centrale.id == 1 && element[s].centrale.capacite >= element[i].habitation.nombreHabitants){
+                    element[s].centrale.capacite -= element[i].habitation.nombreHabitants;
+                    element[i].habitation.viableElec = 1;
+                    element[i].habitation.centraleQuiAlimente = s;
                 }
                 arc = arc->arc_suivant;
             }
@@ -296,7 +304,7 @@ void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
     }
 }
 
-void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX],Graphe *graphe, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
+void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35], INFO *infoPerm,HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBRE_MAX_ELEMENT], Graphe *graphe, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             caseMAP.x = POSITIONMAP_X + LARGEUR1CASE * i;
@@ -325,11 +333,11 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i + a][j + b].habitation.id = map[0][0].id;
                                         map[i][j].type = Habitation;
 
-                                        habitation[map[0][0].id].positionX = i;
-                                        habitation[map[0][0].id].positionY = j;
-                                        habitation[map[0][0].id].evolution = 0;
-                                        habitation[map[0][0].id].compteurEvolution = 0;
-                                        habitation[map[0][0].id].id = 1;
+                                        element[map[0][0].id].habitation.positionX = i;
+                                        element[map[0][0].id].habitation.positionY = j;
+                                        element[map[0][0].id].habitation.evolution = 0;
+                                        element[map[0][0].id].habitation.compteurEvolution = 0;
+                                        element[map[0][0].id].habitation.id = 1;
 
                                         connexRoute(map, graphe, tab_Graphe);
                                     }
@@ -347,16 +355,17 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i + a][j + b].occupe = 1;
                                         map[i+a][j+b].centrale.id = map[0][0].id;
                                         map[i][j].type = Centrale;
-                                        centrale[map[0][0].id].positionX = i;
-                                        centrale[map[0][0].id].positionY = j;
-                                        centrale[map[0][0].id].id = 1; // id = 1  si il y a une centrale à cette case
+
+                                        element[map[0][0].id].centrale.positionX = i;
+                                        element[map[0][0].id].centrale.positionY = j;
+                                        element[map[0][0].id].centrale.id = 1; // id = 1  si il y a une centrale à cette case
+                                        element[map[0][0].id].centrale.capacite = 5000;
 
                                         connexRoute(map, graphe, tab_Graphe);
                                     }
                                 }
                             }
                         }
-
                         if (i < 45 - 3 && j < 35 - 5) {
                             if (hud[3].etat == 1 && testMapOccupation(i, j, map, ChateauEau) == 1 && infoPerm->ECEFlouz >= infoPerm->prixChateauEau) { //conditions sur i et j sinon centrale sort de la map
                                 map[0][0].id++;
@@ -367,9 +376,11 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i + a][j + b].occupe = 1;
                                         map[i][j].type = ChateauEau;
                                         map[i+a][j+b].chateaueau.id = map[0][0].id;
-                                        chateau[map[0][0].id].positionX = i;
-                                        chateau[map[0][0].id].positionY = j;
-                                        chateau[map[0][0].id].id = 1; // id = 1  si il y a un chateau d'eau à cette case
+
+                                        element[map[0][0].id].chateaueau.positionX = i;
+                                        element[map[0][0].id].chateaueau.positionY = j;
+                                        element[map[0][0].id].chateaueau.id = 1; // id = 1  si il y a un chateau d'eau à cette case
+                                        element[map[0][0].id].chateaueau.capacite = 5000;
 
                                         connexRoute(map, graphe, tab_Graphe);
                                     }
@@ -535,8 +546,7 @@ void test(MAP map[45][35]){
 */
 }
 
-void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX],INFO infoPerm){
-
+void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBRE_MAX_ELEMENT], INFO infoPerm){
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
     initialiserTABGRAPHE(tab_Graphe);
 
@@ -596,7 +606,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         //Map
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
         evolution(map,&infoPerm);
-        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, habitation, centrale, chateau, graphe, tab_Graphe);
+        placementElement(mouseposition, caseMAP, map, &infoPerm, hud, element,graphe, tab_Graphe);
         for (int i = 0; i < 45; i++) {
             for (int j = 0; j < 35; j++) {
                 map[i][j].habitation.visite = 0;
@@ -609,7 +619,12 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         EndDrawing();
 
         if (IsKeyPressed(KEY_A)){
-            viabiliteElectricite(graphe, habitation, centrale);
+            viabiliteElectricite(graphe, element);
+            for (int i = 0; i < NOMBRE_CENTRALE_MAX; i++) {
+                if (element[i].centrale.capacite != 0){
+                    printf("%d : %d\n", i,element[i].centrale.capacite);
+                }
+            }
             //graphe_afficher(graphe);
         }
     }

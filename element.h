@@ -8,6 +8,7 @@
 #define NOMBRE_HABITATION_MAX 100
 #define NOMBRE_CENTRALE_MAX 50
 #define NOMBRE_CHATEAUEAU_MAX 50
+#define NOMBRE_MAX_ELEMENT 200
 
 #include "raylib.h"
 
@@ -44,6 +45,7 @@ typedef struct{
     int viable;
     int connex;
     int viableElec;
+    int centraleQuiAlimente;
     int viableEau;
     int compteur;
     int impots;

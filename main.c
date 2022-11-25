@@ -20,6 +20,8 @@ int main(){
     CENTRALE centrale[NOMBRE_CENTRALE_MAX]; //créé si possible un tableau dynamique avec redimensionnement
     CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX]; //créé si possible un tableau dynamique avec redimensionnement
 
+    ELEMENT element[NOMBRE_MAX_ELEMENT];
+
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
 
     SetTargetFPS(60);
@@ -28,7 +30,7 @@ int main(){
     //accueil();
     //modeJeu(&choixmode);
 
-    mapECECITY(map, hud, habitation, centrale,chateau,infoPerm);
+    mapECECITY(map, hud,element,infoPerm);
 
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){

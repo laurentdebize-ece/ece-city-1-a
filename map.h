@@ -24,6 +24,12 @@
 enum type{NONOCCUPE, Route,Habitation, Centrale, ChateauEau};
 
 typedef struct {
+    HABITATION habitation;
+    CHATEAUEAU chateaueau;
+    CENTRALE centrale;
+}ELEMENT;
+
+typedef struct {
 
     int type;
     int occupe; //Savoir si il y a deja quelque chose sur la case (ENUM)
@@ -40,7 +46,7 @@ typedef struct {
 
 void initialisationMap(MAP map[45][35]);
 
-void mapECECITY(MAP map[45][35], HUD hud[6], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX],INFO infoPerm);
+void mapECECITY(MAP map[45][35], HUD hud[6],ELEMENT element[NOMBRE_MAX_ELEMENT],INFO infoPerm);
 
 
 
