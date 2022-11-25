@@ -108,7 +108,7 @@ int verifDoublonArete(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], int s1, in
     tab_Graphe[tab_Graphe[0].last_id].s1 = s1;
     tab_Graphe[tab_Graphe[0].last_id].s2 = s2;
     tab_Graphe[tab_Graphe[0].last_id].valeur = valeur;
-    tab_Graphe[0].last_id ++;
+    tab_Graphe[0].last_id += 1;
 
 }
 
@@ -135,7 +135,7 @@ void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe 
             parcourirRoute(map,x, y + i, compteur+1, s1, g, tab_Graphe);
         }
         else if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].habitation.id != 0 && map[x][y + i].habitation.id != s1){
-            //printf("%d %d %d\n", s1, map[x][y + i].habitation.id, compteur);
+            printf("%d %d %d\n", s1, map[x][y + i].habitation.id, compteur);
             //ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
             //lireGraphe(s1, map[x][y + i].habitation.id, compteur, g);
             verifDoublonArete(tab_Graphe, s1, map[x][y + i].habitation.id, compteur);
@@ -165,13 +165,13 @@ int validationParcourContourMaison(int k, int l){
 void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
     for (int j = 0; j < 35; j++) {
         for (int i = 0; i < 45; i++) {
-            if (map[i][j].habitation.id!=0 && map[i][j].habitation.visite == 0){
-                for (int k = -1; k < 4; k++) {
-                    for (int l = -1; l < 4; l++) {
-
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.visite == 0){
+                for (int k = -1; k < 2; k++) {
+                    for (int l = -1; l < 2; l++) {
                         if (map[i + l][j + k].route.id ==1 && validationParcourContourMaison(k,l)){
                             map[i][j].habitation.connex = 1;
                             map[i+l][j+k].route.visite = 1;
+                            map[i+l][j+k].route.color = ORANGE;
                             map[i][j].habitation.visite = 1;
                             parcourirRoute(map, i+l, j+k, 1, map[i][j].habitation.id, g, tab_Graphe);
                             for (int m = 0; m < 45; m++) {
@@ -481,32 +481,33 @@ void nombreHabitant(MAP map[45][35]){
 void test(MAP map[45][35]){
     for (int a = 0; a < 3; a++) {
         for (int b = 0; b < 3; b++) {
-            map[9 + a][9 + b].occupe = 1;
-            map[9 + a][9 + b].habitation.id = 1;
-            map[9][9].type = Habitation;
+            map[8 + a][9 + b].occupe = 1;
+            map[8 + a][9 + b].habitation.id = 1;
+            map[8][9].type = Habitation;
         }
     }
 
     for (int a = 0; a < 3; a++) {
         for (int b = 0; b < 3; b++) {
-            map[15 + a][14 + b].occupe = 1;
-            map[15 + a][14 + b].habitation.id = 2;
-            map[15][14].type = Habitation;
+            map[16 + a][9 + b].occupe = 1;
+            map[16 + a][9 + b].habitation.id = 2;
+            map[16][9].type = Habitation;
         }
     }
-
+/*
     for (int a = 0; a < 3; a++) {
         for (int b = 0; b < 3; b++) {
             map[16 + a][6 + b].occupe = 1;
             map[16 + a][6 + b].habitation.id = 3;
             map[16][6].type = Habitation;
         }
-    }
+    }*/
 
-    map[12][11].route.id = 1;
-    map[13][11].route.id = 1;
-    map[14][11].route.id = 1;
-    map[15][11].route.id = 1;
+    map[12][10].route.id = 1;
+    map[13][10].route.id = 1;
+    map[14][10].route.id = 1;
+    map[15][10].route.id = 1;
+    /*
     map[15][12].route.id = 1;
     map[16][12].route.id = 1;
     map[16][13].route.id = 1;
@@ -514,7 +515,7 @@ void test(MAP map[45][35]){
     map[15][10].route.id = 1;
     map[15][9].route.id = 1;
     map[15][8].route.id = 1;
-
+*/
 }
 
 void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation[NOMBRE_HABITATION_MAX], CENTRALE centrale[NOMBRE_CENTRALE_MAX], INFO infoPerm){
@@ -547,7 +548,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
     Vector2 mouseposition = {0};
 
-    test(map);
+    //test(map);
 
     while(!WindowShouldClose()){
         infoPerm.time = GetTime();
