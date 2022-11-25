@@ -18,8 +18,8 @@
 #define HAUTEUR 768
 #define LARGEUR1CASE 15//Distance entre le centre de deux carrés adjacent de la map
 
-#define POSITIONMAP_X 180
-#define POSITIONMAP_Y 105
+#define POSITIONMAP_X 190
+#define POSITIONMAP_Y 130
 
 enum type{NONOCCUPE, Route,Habitation, Centrale, ChateauEau};
 

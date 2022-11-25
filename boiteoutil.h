@@ -8,14 +8,14 @@
 #include "raylib.h"
 
 
-#define NOMBRE_CASE_HUD 6
+#define NOMBRE_CASE_HUD 4
 
 typedef struct{
     int etat;
 }HUD;
 
 void initialisationCaseHUD(Rectangle HUD[NOMBRE_CASE_HUD]);
-void initialisationHUD(HUD hud[6]);
+void initialisationHUD(HUD hud[NOMBRE_CASE_HUD]);
 void dessinerHUD(Rectangle HUD[NOMBRE_CASE_HUD]);
 void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector2 mousePosition);
 #endif //ECE_CITY_1_A_BOITEOUTIL_H

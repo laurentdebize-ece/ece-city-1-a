@@ -52,7 +52,8 @@ Rectangle initialisationCaseMAP(){
 void dessinerMap(Vector2 mapPosition){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            DrawRectangle((int)mapPosition.x + i * LARGEUR1CASE,(int)mapPosition.y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, GRAY);
+            DrawRectangle((int)mapPosition.x + i * LARGEUR1CASE,(int)mapPosition.y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BEIGE);
+            DrawRectangleLines((int)mapPosition.x + i * LARGEUR1CASE,(int)mapPosition.y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BROWN);
         }
     }
 }
@@ -79,7 +80,7 @@ int parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *
         }
         if ((x + i) > 0 && (x + i) < 45 && i != 0 && map[x + i][y].habitation.id != s1 && map[x + i][y].habitation.id != 0){
             //printf("%d %d %d", s1, map[x + i][y].habitation.id, compteur);
-            ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
+            //ecrireFichierTexte(s1, map[x + i][y].habitation.id, compteur, g);
         }
     }
     for (int i = -1; i < 1; i++) {
@@ -90,7 +91,7 @@ int parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *
         }
         if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].habitation.id != 0 && map[x][y + i].habitation.id != s1){
             //printf("%d %d %d", s1, map[x][y + i].habitation.id, compteur);
-            ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
+            //ecrireFichierTexte(s1, map[x][y + i].habitation.id, compteur, g);
         }
     }
 }
@@ -173,7 +174,7 @@ int testMapOccupation(int i, int j, MAP map[45][35], int type){ //type habitatio
 }
 
 void dessinerSurPassage(Rectangle caseMAP, HUD hud[NOMBRE_CASE_HUD]){
-    DrawRectangle(caseMAP.x,caseMAP.y, LARGEUR1CASE,LARGEUR1CASE, RED);
+    DrawRectangle(caseMAP.x,caseMAP.y, LARGEUR1CASE,LARGEUR1CASE, BROWN);
     for (int k = 0; k < NOMBRE_CASE_HUD; k++) {
         if (hud[k].etat == 1){
             switch (k) {
@@ -208,7 +209,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                 dessinerSurPassage(caseMAP, hud);
 
                 if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                    for (int k = 0; k < 6; k++) {
+                    for (int k = 0; k < NOMBRE_CASE_HUD; k++) {
                         if (hud[0].etat == 1 && testMapOccupation(i, j, map, Route) && infoPerm->ECEFlouz >= infoPerm->prixRoute) { //conditions sur i et j sinon maison sort de la map
                             infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixRoute;
                             map[i][j].occupe = 1;
@@ -344,9 +345,7 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
         for (int j = 0; j < 35; j++) {
             if(map[i][j].type != 0){
                 if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
-
                     DrawTexture(terrain, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
-
                 }
                 if (map[i][j].habitation.evolution==CABANE){
 
@@ -419,12 +418,14 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
     Texture2D maison;
     Texture2D immeuble;
     Texture2D gratteciel;
+    Texture2D fondmap;
 
     terrain = LoadTexture("../images/Constructions /terrainvague2.png");
     cabane = LoadTexture("../images/Constructions /cabane2.png");
     maison = LoadTexture("../images/Constructions /maison2.png");
     immeuble = LoadTexture("../images/Constructions /immeuble2.png");
     gratteciel = LoadTexture("../images/Constructions /gratteciel2.png");
+    fondmap = LoadTexture("../images/Menu/fond.png");
 
     Rectangle HUD[NOMBRE_CASE_HUD];
     initialisationCaseHUD(HUD);
@@ -441,7 +442,8 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         infoPerm.time = GetTime();
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(WHITE);
+        DrawTexture(fondmap, 0, 0, WHITE);
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
@@ -466,6 +468,8 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
 
         EndDrawing();
     }
+
+    UnloadTexture(fondmap);
     UnloadTexture(cabane);
     UnloadTexture(maison);
     UnloadTexture(immeuble);

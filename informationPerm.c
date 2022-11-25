@@ -19,7 +19,9 @@ void initialisationInfo(INFO *infoPerm){
 }
 
 void affichageInfo(INFO *infoPerm){ //Temps, argent etc...
-    DrawRectangleLines(10, 10, 160, 90, BLUE);
+    DrawRectangle(10, 10, 160, 90, BEIGE);
+    DrawRectangleLines(10, 10, 160, 90, BLACK);
+
     DrawText(TextFormat("Time: %d", (infoPerm->time)), 20, 15, 10, BLACK);
     DrawText(TextFormat("ECEFlouz: %f", (infoPerm->ECEFlouz)), 20, 30, 10, BLACK);
     DrawText(TextFormat("Habitants: %d", (infoPerm->habitants)), 20, 45, 10, BLACK);
