@@ -96,21 +96,20 @@ void ecrireFichierTexte(int s1, int s2, int compteur, Graphe *g){
     fclose(ifs);
 }
 
-void verifDoublonArete(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], int s1, int s2, int valeur){
-    printf("%d", tab_Graphe[0].last_id); //problème tab_Graphe[0].last_id beaucoup trop grand
+int verifDoublonArete(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], int s1, int s2, int valeur){
     for (int i = 0; i < tab_Graphe[0].last_id + 1; i++) {
-        if (tab_Graphe[i].s1 == s1 && tab_Graphe[i].s2 == s2){
+        if ((tab_Graphe[i].s1 == s1 && tab_Graphe[i].s2 == s2) || (tab_Graphe[i].s1 == s2 && tab_Graphe[i].s2 == s1)){
             if (valeur <= tab_Graphe[i].valeur){
                 tab_Graphe[i].valeur = valeur;
+                return 0;
             }
         }
-        else{
-            tab_Graphe[tab_Graphe[0].last_id].s1 = s1;
-            tab_Graphe[tab_Graphe[0].last_id].s2 = s2;
-            tab_Graphe[tab_Graphe[0].last_id].valeur = valeur;
-            tab_Graphe[0].last_id++;
-        }
     }
+    tab_Graphe[tab_Graphe[0].last_id].s1 = s1;
+    tab_Graphe[tab_Graphe[0].last_id].s2 = s2;
+    tab_Graphe[tab_Graphe[0].last_id].valeur = valeur;
+    tab_Graphe[0].last_id ++;
+
 }
 
 void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
