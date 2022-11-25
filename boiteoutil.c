@@ -13,7 +13,7 @@ void initialisationCaseHUD(Rectangle HUD[NOMBRE_CASE_HUD]){
     }
 }
 
-void initialisationHUD(HUD hud[6]){
+void initialisationHUD(HUD hud[NOMBRE_CASE_HUD]){
     for (int i=0;i<NOMBRE_CASE_HUD;i++){
         hud[i].etat=0;
     }
