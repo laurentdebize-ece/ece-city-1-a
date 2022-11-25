@@ -23,7 +23,6 @@ int main(){
 
     SetTargetFPS(60);
 
-
     //Fonction executé
     //accueil();
     //modeJeu(&choixmode);
