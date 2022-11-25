@@ -29,17 +29,16 @@ int main(){
     //modeJeu(&choixmode);
 
     mapECECITY(map, hud, habitation, centrale, infoPerm);
-
+/*
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){
-
+            printf("%d", map[i][j].habitation.visite);
         }
         printf("\n");
     }
     printf("%d\n",map[0][0].habitation.connex);
     //infoPerm.ECEFlouz = infoPerm.ECEFlouz -1000;
     printf("%f ",infoPerm.ECEFlouz);
-
-
+*/
     return 0;
 }

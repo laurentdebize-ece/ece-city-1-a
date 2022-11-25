@@ -8,6 +8,8 @@
 #define NOMBRE_HABITATION_MAX 100
 #define NOMBRE_CENTRALE_MAX 50
 
+#include "raylib.h"
+
 enum evolution {TERRAIN_VAGUE, CABANE, MAISON, IMMEUBLE, GRATTE_CIEL};
 
 typedef struct{
@@ -57,6 +59,7 @@ typedef struct{
 typedef struct {
     int visite;
     int id;
+    Color color;
 }ROUTE;
 
 

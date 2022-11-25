@@ -38,6 +38,14 @@ typedef struct Graphe
     pSommet* pSommet;
 } Graphe;
 
+#define NOMBRE_ARETES_TABGRAPHE 100
+
+typedef struct {
+    int s1, s2;
+    int valeur;
+    int last_id;
+}TAB_GRAPHE;
+
 // creer le graphe
 Graphe* CreerGraphe(int ordre);
 
@@ -53,5 +61,7 @@ void afficher_successeurs(pSommet * sommet, int num);
 
 /*affichage du graphe avec les successeurs de chaque sommet */
 void graphe_afficher(Graphe* graphe);
+
+int lireGraphe(int s1, int s2, int valeur, Graphe *graphe);
 
 #endif // GRAPHE_H_INCLUDED
