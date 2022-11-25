@@ -62,6 +62,6 @@ void afficher_successeurs(pSommet * sommet, int num);
 /*affichage du graphe avec les successeurs de chaque sommet */
 void graphe_afficher(Graphe* graphe);
 
-int lireGraphe(int s1, int s2, int valeur, Graphe *graphe);
+void lireGraphe(TAB_GRAPHE tab_graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe);
 
 #endif // GRAPHE_H_INCLUDED

@@ -97,12 +97,17 @@ Graphe *lire_graphe(char *nomFichier) {
     return graphe;
 }
 
-int lireGraphe(int s1, int s2, int valeur, Graphe *graphe) {
-    // creer les aretes du graphe
-    graphe->pSommet = CreerArete(graphe->pSommet, s1, s2, valeur);
+void lireGraphe(TAB_GRAPHE tab_graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe) {
 
-    if (!graphe->orientation){
-        graphe->pSommet = CreerArete(graphe->pSommet, s2, s1, valeur);
+    graphe = CreerGraphe(graphe->ordre);
+
+    for (int i = 0; i < tab_graphe[0].last_id; i++) {
+        // creer les aretes du graphe
+        graphe->pSommet = CreerArete(graphe->pSommet, tab_graphe[i].s1 - 1, tab_graphe[i].s2 - 1, tab_graphe[i].valeur);
+
+        if (!graphe->orientation){
+            graphe->pSommet = CreerArete(graphe->pSommet, tab_graphe[i].s2 - 1, tab_graphe[i].s1 - 1, tab_graphe[i].valeur);
+        }
     }
 }
 
