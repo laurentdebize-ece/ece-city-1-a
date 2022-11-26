@@ -1,7 +1,5 @@
 #include "map.h"
 
-//
-
 Vector2 initialisationPositionMap(){
     Vector2 mapPosition;
 
@@ -43,13 +41,6 @@ void initialisationMap(MAP map[45][35]){
     }
 }
 
-void initialiserElement(ELEMENT element[NOMBRE_MAX_ELEMENT]){
-    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
-        element[i].habitation.id = 0;
-        element[i].habitation.evolution = 0;
-    }
-}
-
 Rectangle initialisationCaseMAP(){
     Rectangle MAP;
 
@@ -74,6 +65,9 @@ void initialiserGraphe(Graphe *g){
     g->orientation = 0;
     g->ordre = 0;
     g->taille = 0;
+    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
+        g->pSommet[i]->type = 0;
+    }
 }
 
 void dessinerMap(Vector2 mapPosition){
@@ -220,19 +214,23 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
     }
 }
 
-void viabiliteElectricite(Graphe *graphe, ELEMENT element[NOMBRE_MAX_ELEMENT]){
-    for (int i = 0; i < NOMBRE_HABITATION_MAX; i++) {
-        if (element[i].habitation.id == 1){
-            struct Arc *arc = graphe->pSommet[i]->arc;
-            while (arc != NULL && !(element[i].habitation.viableElec)){
+void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
+    int s0;
+    for (int j = 0; j < 35; j++) {
+        for (int i = 0; i < 45; i++) {
+            s0 = map[i][j].habitation.id;
+            if (s0 != 0){
+                struct Arc *arc = graphe->pSommet[s0]->arc;
+                while (arc != NULL && !(graphe->pSommet[s0]->habitation.viableElec)){
 
-                int s = arc->sommet;
-                if (element[s].centrale.id == 1 && element[s].centrale.capacite >= element[i].habitation.nombreHabitants){
-                    element[s].centrale.capacite -= element[i].habitation.nombreHabitants;
-                    element[i].habitation.viableElec = 1;
-                    element[i].habitation.centraleQuiAlimente = s;
+                    int s = arc->sommet;
+                    if (graphe->pSommet[s]->type == 2 && graphe->pSommet[s]->centrale.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
+                        graphe->pSommet[s]->centrale.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
+                        graphe->pSommet[s0]->habitation.viableElec = 1;
+                        graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
+                    }
+                    arc = arc->arc_suivant;
                 }
-                arc = arc->arc_suivant;
             }
         }
     }
@@ -332,16 +330,27 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i + a][j + b].occupe = 1;
                                         map[i + a][j + b].habitation.id = map[0][0].id;
                                         map[i][j].type = Habitation;
-
-                                        element[map[0][0].id].habitation.positionX = i;
-                                        element[map[0][0].id].habitation.positionY = j;
-                                        element[map[0][0].id].habitation.evolution = 0;
-                                        element[map[0][0].id].habitation.compteurEvolution = 0;
-                                        element[map[0][0].id].habitation.id = 1;
-
-                                        connexRoute(map, graphe, tab_Graphe);
                                     }
                                 }
+                                element[map[0][0].id].habitation.positionX = i;
+                                element[map[0][0].id].habitation.positionY = j;
+                                element[map[0][0].id].habitation.evolution = 0;
+                                element[map[0][0].id].habitation.compteurEvolution = 0;
+                                element[map[0][0].id].habitation.centraleQuiAlimente = 0;
+                                element[map[0][0].id].habitation.id = 1;
+                                element[map[0][0].id].habitation.nombreHabitants = 0;
+
+                                graphe->pSommet[map[0][0].id]->valeur = map[0][0].id;
+                                graphe->pSommet[map[0][0].id]->habitation.id = map[0][0].id;
+                                graphe->pSommet[map[0][0].id]->habitation.nombreHabitants = 0;
+                                graphe->pSommet[map[0][0].id]->habitation.viableElec = 0;
+                                graphe->pSommet[map[0][0].id]->habitation.viable = 0;
+                                graphe->pSommet[map[0][0].id]->habitation.viableEau = 0;
+                                graphe->pSommet[map[0][0].id]->habitation.evolution = 0;
+                                graphe->pSommet[map[0][0].id]->type = 1;
+
+
+                                connexRoute(map, graphe, tab_Graphe);
                             }
                         }
 
@@ -356,14 +365,21 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i+a][j+b].centrale.id = map[0][0].id;
                                         map[i][j].type = Centrale;
 
-                                        element[map[0][0].id].centrale.positionX = i;
-                                        element[map[0][0].id].centrale.positionY = j;
-                                        element[map[0][0].id].centrale.id = 1; // id = 1  si il y a une centrale à cette case
-                                        element[map[0][0].id].centrale.capacite = 5000;
-
-                                        connexRoute(map, graphe, tab_Graphe);
                                     }
                                 }
+
+                                element[map[0][0].id].centrale.positionX = i;
+                                element[map[0][0].id].centrale.positionY = j;
+                                element[map[0][0].id].centrale.id = 1; // id = 1  si il y a une centrale à cette case
+                                element[map[0][0].id].centrale.capacite = 5000;
+
+                                graphe->pSommet[map[0][0].id]->valeur = map[0][0].id;
+                                graphe->pSommet[i]->centrale.id = map[0][0].id;
+                                graphe->pSommet[i]->centrale.capacite = 5000;
+                                graphe->pSommet[i]->centrale.quantiteDistribue = 0;
+                                graphe->pSommet[map[0][0].id]->type = 2;
+
+                                connexRoute(map, graphe, tab_Graphe);
                             }
                         }
                         if (i < 45 - 3 && j < 35 - 5) {
@@ -376,15 +392,20 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                         map[i + a][j + b].occupe = 1;
                                         map[i][j].type = ChateauEau;
                                         map[i+a][j+b].chateaueau.id = map[0][0].id;
-
-                                        element[map[0][0].id].chateaueau.positionX = i;
-                                        element[map[0][0].id].chateaueau.positionY = j;
-                                        element[map[0][0].id].chateaueau.id = 1; // id = 1  si il y a un chateau d'eau à cette case
-                                        element[map[0][0].id].chateaueau.capacite = 5000;
-
-                                        connexRoute(map, graphe, tab_Graphe);
                                     }
                                 }
+                                element[map[0][0].id].chateaueau.positionX = i;
+                                element[map[0][0].id].chateaueau.positionY = j;
+                                element[map[0][0].id].chateaueau.id = 1; // id = 1  si il y a un chateau d'eau à cette case
+                                element[map[0][0].id].chateaueau.capacite = 5000;
+
+                                graphe->pSommet[map[0][0].id]->valeur = map[0][0].id;
+                                graphe->pSommet[i]->chateaueau.id = map[0][0].id;
+                                graphe->pSommet[i]->chateaueau.capacite = 5000;
+                                graphe->pSommet[i]->chateaueau.quantiteDistribue = 0;
+                                graphe->pSommet[map[0][0].id]->type = 3;
+
+                                connexRoute(map, graphe, tab_Graphe);
                             }
                         }
                     }
@@ -550,7 +571,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
     initialiserTABGRAPHE(tab_Graphe);
 
-    Graphe *graphe = CreerGraphe(NOMBRE_ARETES_TABGRAPHE);
+    Graphe *graphe = CreerGraphe(NOMBRE_MAX_ELEMENT);
     initialiserGraphe(graphe);
 
     Vector2 mapPosition = initialisationPositionMap();
@@ -590,7 +611,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
-
         }
         mouseposition = GetMousePosition();
 
@@ -600,6 +620,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         //nombreHabitant(map);
         //connexRoute(map, graphe, tab_Graphe);
         lireGraphe(tab_Graphe, graphe);
+        viabiliteElectricite(graphe, map);
         //habitationViableElec(map);
         //habitationViable(map);
 
@@ -619,10 +640,9 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         EndDrawing();
 
         if (IsKeyPressed(KEY_A)){
-            viabiliteElectricite(graphe, element);
-            for (int i = 0; i < NOMBRE_CENTRALE_MAX; i++) {
-                if (element[i].centrale.capacite != 0){
-                    printf("%d : %d\n", i,element[i].centrale.capacite);
+            for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
+                if (graphe->pSommet[i]->habitation.viableElec != 0){
+                    printf("%d viable(%d) est alimenté par %d / il reste %d €\n", graphe->pSommet[i]->valeur,graphe->pSommet[i]->habitation.viableElec, graphe->pSommet[i]->habitation.centraleQuiAlimente,graphe->pSommet[graphe->pSommet[i]->habitation.centraleQuiAlimente]->centrale.capacite);
                 }
             }
             //graphe_afficher(graphe);

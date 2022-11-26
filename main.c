@@ -16,10 +16,6 @@ int main(){
     initialisationHUD(hud);
     initialisationInfo(&infoPerm);
 
-    HABITATION habitation[NOMBRE_HABITATION_MAX]; //créé si possible un tableau dynamique avec redimensionnement
-    CENTRALE centrale[NOMBRE_CENTRALE_MAX]; //créé si possible un tableau dynamique avec redimensionnement
-    CHATEAUEAU chateau[NOMBRE_CHATEAUEAU_MAX]; //créé si possible un tableau dynamique avec redimensionnement
-
     ELEMENT element[NOMBRE_MAX_ELEMENT];
 
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");

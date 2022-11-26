@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../element.h"
 
 
 /* Structure d'un arc*/
@@ -21,10 +22,13 @@ struct Sommet
 {
     struct Arc* arc;
     int valeur;
-    int type;
+    int type; //0 rien, 1 habitation, 2 centrale, 3 chateau eau
     int couleur;
     int distanceS0;
 
+    HABITATION habitation;
+    CENTRALE centrale;
+    CHATEAUEAU chateaueau;
 };
 
 /* Alias de pointeur sur un Sommet */
