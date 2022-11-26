@@ -559,6 +559,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], HABITATION habitation
         BeginDrawing();
         ClearBackground(WHITE);
         DrawTexture(fondmap, 0, 0, WHITE);
+        DrawText("ECE CITY", 320, 12, 70, BROWN);
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
