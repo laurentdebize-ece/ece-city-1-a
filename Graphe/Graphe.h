@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../element.h"
 
 
 /* Structure d'un arc*/
@@ -21,9 +22,13 @@ struct Sommet
 {
     struct Arc* arc;
     int valeur;
+    int type; //0 rien, 1 habitation, 2 centrale, 3 chateau eau
     int couleur;
     int distanceS0;
 
+    HABITATION habitation;
+    CENTRALE centrale;
+    CHATEAUEAU chateaueau;
 };
 
 /* Alias de pointeur sur un Sommet */
@@ -62,6 +67,6 @@ void afficher_successeurs(pSommet * sommet, int num);
 /*affichage du graphe avec les successeurs de chaque sommet */
 void graphe_afficher(Graphe* graphe);
 
-int lireGraphe(int s1, int s2, int valeur, Graphe *graphe);
+void lireGraphe(TAB_GRAPHE tab_graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe);
 
 #endif // GRAPHE_H_INCLUDED
