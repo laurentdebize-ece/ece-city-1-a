@@ -349,7 +349,6 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                                 graphe->pSommet[map[0][0].id]->habitation.evolution = 0;
                                 graphe->pSommet[map[0][0].id]->type = 1;
 
-
                                 connexRoute(map, graphe, tab_Graphe);
                             }
                         }
@@ -367,7 +366,6 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 
                                     }
                                 }
-
                                 element[map[0][0].id].centrale.positionX = i;
                                 element[map[0][0].id].centrale.positionY = j;
                                 element[map[0][0].id].centrale.id = 1; // id = 1  si il y a une centrale à cette case
@@ -567,6 +565,21 @@ void test(MAP map[45][35]){
 */
 }
 
+void testViabilite(Graphe *graphe, MAP map[45][35]){
+    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
+        if (graphe->pSommet[i]->habitation.viableElec){ //&& graphe->pSommet[i]->habitation.viableEau
+            graphe->pSommet[i]->habitation.viable = 1;
+            for (int j = 0; j < 35; j++) {
+                for (int k = 0; k < 45; k++) {
+                    if (map[k][j].habitation.id == i){
+                        map[k][j].habitation.viable = 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBRE_MAX_ELEMENT], INFO infoPerm){
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
     initialiserTABGRAPHE(tab_Graphe);
@@ -620,9 +633,8 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         //nombreHabitant(map);
         //connexRoute(map, graphe, tab_Graphe);
         lireGraphe(tab_Graphe, graphe);
-        viabiliteElectricite(graphe, map);
-        //habitationViableElec(map);
-        //habitationViable(map);
+
+        testViabilite(graphe, map);
 
         //Map
         dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
@@ -640,6 +652,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         EndDrawing();
 
         if (IsKeyPressed(KEY_A)){
+            viabiliteElectricite(graphe, map);
             for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
                 if (graphe->pSommet[i]->habitation.viableElec != 0){
                     printf("%d viable(%d) est alimenté par %d / il reste %d €\n", graphe->pSommet[i]->valeur,graphe->pSommet[i]->habitation.viableElec, graphe->pSommet[i]->habitation.centraleQuiAlimente,graphe->pSommet[graphe->pSommet[i]->habitation.centraleQuiAlimente]->centrale.capacite);
