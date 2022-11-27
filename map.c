@@ -35,7 +35,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].chateaueau.id = 0;
             map[i][j].habitation.connex = 0;
             map[i][j].habitation.viableElec = 1;
-            map[i][j].habitation.viableEau = 1;
+            map[i][j].habitation.viableEau = 0;
 
         }
     }
@@ -58,6 +58,8 @@ void initialiserTABGRAPHE(TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
         tab_Graphe[i].s2 = 0;
         tab_Graphe[i].valeur = 0;
         tab_Graphe[i].last_id = 0;
+        tab_Graphe[i].type = 0;
+
     }
 }
 
@@ -166,6 +168,8 @@ void parcourirRoute(MAP map[45][35], int x, int y, int compteur, int s1, Graphe 
         }
         else if ((y + i) > 0 && (y + i) < 35 && i != 0 && map[x][y + i].chateaueau.id != 0){
             verifDoublonArete(tab_Graphe, s1, map[x][y + i].chateaueau.id, compteur);
+            tab_Graphe[tab_Graphe[0].last_id-1].type=3;
+
         }
     }
 }
@@ -230,6 +234,64 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
                         graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
                     }
                     arc = arc->arc_suivant;
+                }
+            }
+        }
+    }
+}
+
+
+
+void viabiliteEau(MAP map[45][35],TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
+    int s1[100];
+    int s2[100];
+    int valeur[100];
+    int type[100];
+    int sommet1 = 0;
+    int sommet2 = 0;
+    int distance = 0;
+    int p = 0;
+    for (int z=0;z<tab_Graphe[0].last_id;z++){
+        s1[z] = tab_Graphe[z].s1;
+        s2[z] = tab_Graphe[z].s2;
+        valeur[z] = tab_Graphe[z].valeur;
+        type[z] = tab_Graphe[z].type;
+    }
+    for(int i=0;i<tab_Graphe[0].last_id-1;i++)
+        for(int j=i+1;j<tab_Graphe[0].last_id;j++)
+            if ( valeur[i] > valeur[j] ) {
+                distance = valeur[i];
+                valeur[i] = valeur[j];
+                valeur[j] = distance;
+
+                sommet1 = s1[i];
+                s1[i] = s1[j];
+                s1[j] = sommet1;
+
+                sommet2 = s2[i];
+                s2[i] = s2[j];
+                s2[j] = sommet2;
+
+                p = type[i];
+                type[i] = type[j];
+                type[j] = p;
+
+            }
+
+    for (int i=0;i<tab_Graphe[0].last_id;i++){
+        if (type[i] == 3){
+            for (int j = 0; j < 35; j++) {
+                for (int k = 0; k < 45; k++) {
+                    if (map[k][j].habitation.id == s1[i] && map[k][j].habitation.viableEau == 0){
+                        for (int a = 0; a < 35; a++) {
+                            for (int b = 0; b < 45; b++) {
+                                if(map[b][a].chateaueau.id == s2[i] && map[b][a].chateaueau.capacite>=map[k][j].habitation.nombreHabitants ){
+                                    map[b][a].chateaueau.capacite = map[b][a].chateaueau.capacite - map[k][j].habitation.nombreHabitants;
+                                    map[k][j].habitation.viableEau = 1;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -383,6 +445,7 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
                         if (i < 45 - 3 && j < 35 - 5) {
                             if (hud[3].etat == 1 && testMapOccupation(i, j, map, ChateauEau) == 1 && infoPerm->ECEFlouz >= infoPerm->prixChateauEau) { //conditions sur i et j sinon centrale sort de la map
                                 map[0][0].id++;
+                                map[0][0].idChateauEau++;
                                 infoPerm->ECEFlouz = infoPerm->ECEFlouz - infoPerm->prixChateauEau;
                                 graphe->ordre++;
                                 for (int a = 0; a < 4; a++) {
@@ -633,7 +696,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         //nombreHabitant(map);
         //connexRoute(map, graphe, tab_Graphe);
         lireGraphe(tab_Graphe, graphe);
-
+        viabiliteEau(map,tab_Graphe);
         testViabilite(graphe, map);
 
         //Map
