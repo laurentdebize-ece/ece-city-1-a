@@ -5,9 +5,6 @@
 #ifndef ECE_CITY_1_A_ELEMENT_H
 #define ECE_CITY_1_A_ELEMENT_H
 
-#define NOMBRE_HABITATION_MAX 100
-#define NOMBRE_CENTRALE_MAX 50
-#define NOMBRE_CHATEAUEAU_MAX 50
 #define NOMBRE_MAX_ELEMENT 300
 
 #include "raylib.h"

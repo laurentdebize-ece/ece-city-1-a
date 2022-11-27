@@ -16,8 +16,6 @@ int main(){
     initialisationHUD(hud);
     initialisationInfo(&infoPerm);
 
-    ELEMENT element[NOMBRE_MAX_ELEMENT];
-
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
 
     SetTargetFPS(60);
@@ -25,7 +23,7 @@ int main(){
     //Fonction executé
     accueil(&choixmode);
 
-    mapECECITY(map, hud,element,infoPerm, choixmode);
+    mapECECITY(map, hud,infoPerm, choixmode);
 
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){
