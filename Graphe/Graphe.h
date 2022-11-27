@@ -49,6 +49,7 @@ typedef struct {
     int s1, s2;
     int valeur;
     int last_id;
+    int type;
 }TAB_GRAPHE;
 
 // creer le graphe

@@ -42,7 +42,7 @@ void remiseZero(HUD hud[NOMBRE_CASE_HUD],int i){
     }
 }
 
-void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector2 mousePosition){
+void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector2 mousePosition, int *niveauAffichage){
     for (int i = 0; i < NOMBRE_CASE_HUD; i++) {
 
         //HUD.y = HUD.y + HUD.height * (float)i;
@@ -59,6 +59,7 @@ void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector
                 DrawRectangleLines((int)HUD[i].x, (int)HUD[i].y, (int)HUD[i].width, (int)HUD[i].height, BROWN);
                 if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                     hud[i].etat = 1;
+                    *niveauAffichage = i - 4;
                 }
             }
         }
