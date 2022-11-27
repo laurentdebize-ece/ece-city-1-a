@@ -225,7 +225,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
 
                         parcourirRoute(map, i + k, j - 2, 2, map[i][j].habitation.id, g, tab_Graphe);
                     }
-                    if ((i + k)>=0 && (j + 4)<45 && (i + k)<=0 && (j + 4)>35 && map[i + k][j + 4].route.id == 1 && map[i + k][j + 4 - 1].route.id == 1){ //3 cases inférieur
+                    if ((i + k)>=0 && (j + 4) < 45 && (i + k) <= 0 && (j + 4)>35 && map[i + k][j + 4].route.id == 1 && map[i + k][j + 4 - 1].route.id == 1){ //3 cases inférieur
                         map[i][j].habitation.connex = 1;
 
                         map[i + k][j + 4].route.visite = 1;
@@ -322,7 +322,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
                     }
                     parcourirRoute(map, i + 3, j + 3, 2, map[i][j].habitation.id, g, tab_Graphe);
                 }
-                if ((i - 1) >= 0 && (j + 3) <= 35 && map[i - 1][j + 3].route.id == 1 && (map[i][j + 3].route.id == 1 || map[i - 1][j + 3 - 1].route.id == 1)){ //coins bas gauche
+                if ((i - 1) >= 0 && (j + 3) < 35 && map[i - 1][j + 3].route.id == 1 && (map[i][j + 3].route.id == 1 || map[i - 1][j + 3 - 1].route.id == 1)){ //coins bas gauche
                     map[i][j].habitation.connex = 1;
 
                     map[i - 1][j + 3].route.visite = 1;
@@ -339,7 +339,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
 
                     for (int l = 0; l < 3; l++) {
                         for (int m = 0; m < 3; m++) {
-                            map[i + l][j + m].habitation.visite = 1;
+                            map[i + m][j + l].habitation.visite = 1;
                         }
                     }
                     parcourirRoute(map, i - 1, j + 3, 2, map[i][j].habitation.id, g, tab_Graphe);
@@ -614,14 +614,10 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 void evolutionV2(MAP map[45][35], INFO *infoPerm, int modeJeu){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            map[i][j].habitation.compteurArgent++;
-            if (map[i][j].habitation.id != 0 && map[i][j].habitation.compteurArgent == 15){
-                infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
-                map[i][j].habitation.compteurArgent = 0;
-            }
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.viable == 1){
                 map[i][j].habitation.compteur++;
                 if(map[i][j].habitation.compteur == 15){
+                    infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
                     if (map[i][j].habitation.evolution < 4){map[i][j].habitation.evolution++;
                         printf("%d", map[i][j].habitation.evolution);}
                     map[i][j].habitation.compteur = 0;
@@ -924,6 +920,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
+            testRegression(map);
             evolutionV2(map, &infoPerm, choixMode);
         }
         mouseposition = GetMousePosition();
@@ -957,7 +954,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
                         map[i][j].route.visite = 0;
                     }
                 }
-                //nombreHabitant(map,&infoPerm);
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage, graphe); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                 break;
@@ -980,8 +976,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
         viabiliteEau(map, tab_Graphe, graphe);
         testViabilite(graphe, map);
 
-        testRegression(map);
-
         for (int k = 0; k < 45; k++) {
             for (int l = 0; l < 35; l++) {
                 map[k][l].chateaueau.visite = 0;
@@ -989,7 +983,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
             }
         }
 
-        //nombreHabitant(map);
+        nombreHabitant(map, &infoPerm);
 
         EndDrawing();
 
