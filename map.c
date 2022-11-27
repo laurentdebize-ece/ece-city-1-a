@@ -390,8 +390,6 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
     }
 }
 
-
-
 void viabiliteEau(MAP map[45][35],TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe){
     int s1[100];
     int s2[100];
@@ -609,6 +607,47 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
     }
 }
 
+void impots(MAP map[45][35], INFO *infoPerm){
+
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.compteurEvolution/60 == 15){
+                infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
+            }
+        }
+    }
+}
+
+void evolutionV2(MAP map[45][35], INFO *infoPerm){
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++) {
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.viable == 1){
+                map[i][j].habitation.compteur++;
+                if(map[i][j].habitation.compteur == 15){
+                    if (map[i][j].habitation.evolution < 4){map[i][j].habitation.evolution++;}
+                    map[i][j].habitation.compteur = 0;
+                    infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
+                }
+            }
+            if(map[i][j].habitation.evolution == 0){
+                map[i][j].habitation.nombreHabitants = 0;
+            }
+            if(map[i][j].habitation.evolution == 1){
+                map[i][j].habitation.nombreHabitants = 10;
+            }
+            if(map[i][j].habitation.evolution == 2){
+                map[i][j].habitation.nombreHabitants = 50;
+            }
+            if(map[i][j].habitation.evolution == 3){
+                map[i][j].habitation.nombreHabitants = 100;
+            }
+            if(map[i][j].habitation.evolution == 4){
+                map[i][j].habitation.nombreHabitants = 1000;
+            }
+        }
+    }
+}
+
 void evolution(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -617,29 +656,27 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturArgent && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniArgent){
                     map[i][j].habitation.tempsFuturArgent=map[i][j].habitation.tempsFuturArgent+15;
                     map[i][j].habitation.tempsBanniArgent=map[i][j].habitation.compteurEvolution;
-
-                    infoPerm->ECEFlouz = infoPerm->ECEFlouz + map[i][j].habitation.nombreHabitants * 10;
                 }
                 if (map[i][j].habitation.viable == 1){
 
 
-                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniEvolution){
-                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
-                    map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
-                    map[i][j].habitation.evolution++;
-                }
-                for (int k = 0; k < 45; k++) {
-                    for (int l = 0; l < 35; l++) {
-                        if (map[k][l].habitation.id == map[i][j].habitation.id){
-                            if (map[k][l].habitation.evolution < map[i][j].habitation.evolution){
-                                map[k][l].habitation.evolution = map[i][j].habitation.evolution;
-                                map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
+                    if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniEvolution){
+                        map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
+                        map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
+                        map[i][j].habitation.evolution++;
+                    }
+                    for (int k = 0; k < 45; k++) {
+                        for (int l = 0; l < 35; l++) {
+                            if (map[k][l].habitation.id == map[i][j].habitation.id){
+                                if (map[k][l].habitation.evolution < map[i][j].habitation.evolution){
+                                    map[k][l].habitation.evolution = map[i][j].habitation.evolution;
+                                    map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
+                                }
                             }
-
                         }
                     }
                 }
-            }}
+            }
             if(map[i][j].habitation.evolution == 0){
                 map[i][j].habitation.nombreHabitants = 0;
             }
@@ -837,26 +874,17 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
 void testViabilite(Graphe *graphe, MAP map[45][35]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++){
-        if (map[i][j].habitation.viableElec == 1 && map[i][j].habitation.viableEau == 1){
-            graphe->pSommet[i]->habitation.viable = 1;
-            map[i][j].habitation.viable = 1;
+            if (map[i][j].habitation.viableElec == 1 && map[i][j].habitation.viableEau == 1){
+                printf("%d\n", map[i][j].habitation.id);
+                graphe->pSommet[i]->habitation.viable = 1;
+                map[i][j].habitation.viable = 1;
 
+            }
         }
-
-    }
     }
 }
 
-void dessinerimgHud(Texture2D road, Texture2D house, Texture2D elec, Texture2D eau){
-
-    DrawTexture(eau, 45, 515, WHITE);
-    DrawTexture(elec, 45, 415, WHITE);
-    DrawTexture(road, 45, 215, WHITE);
-    DrawTexture(house, 45, 315, WHITE);
-
-}
-
-void testRegression(MAP map[45][35], Graphe *graphe){
+void testRegression(MAP map[45][35]){
     for (int j = 0; j < 35; j++) {
         for (int i = 0; i < 45; i++) {
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.viable == 0 && map[i][j].habitation.evolution > 0){
@@ -897,7 +925,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
     int niveauAffichage = 0;
 
-    float lifetime = 15.0f;
+    float lifetime = 1.0f;
     Timer timer = {0};
     StartTimer(&timer, lifetime);
 
@@ -916,7 +944,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
-            testRegression(map, graphe);
+            evolutionV2(map, &infoPerm);
         }
         mouseposition = GetMousePosition();
 
@@ -942,7 +970,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
                 //Map
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
-                evolution(map,&infoPerm);
                 placementElement(mouseposition, caseMAP, map, &infoPerm, hud,graphe, tab_Graphe);
                 for (int i = 0; i < 45; i++) {
                     for (int j = 0; j < 35; j++) {
@@ -956,14 +983,12 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
             }
             case 1:{
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
-                evolution(map,&infoPerm);
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                 break;
             }
             case 2:{
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
-                evolution(map,&infoPerm);
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                break;
@@ -973,6 +998,9 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
         viabiliteElectricite(graphe, map);
         viabiliteEau(map, tab_Graphe, graphe);
         testViabilite(graphe, map);
+
+        impots(map, &infoPerm);
+        testRegression(map);
 
         for (int k = 0; k < 45; k++) {
             for (int l = 0; l < 35; l++) {

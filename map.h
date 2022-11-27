@@ -42,7 +42,7 @@ void initialisationMap(MAP map[45][35]);
 
 void mapECECITY(MAP map[45][35], HUD hud[6],INFO infoPerm, int choixMode);
 
-
+void testRegression(MAP map[45][35]);
 
 
 #endif

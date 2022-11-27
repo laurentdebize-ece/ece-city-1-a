@@ -66,6 +66,16 @@ void HUDcollision(HUD hud[NOMBRE_CASE_HUD],Rectangle HUD[NOMBRE_CASE_HUD],Vector
     }
 }
 
+
+void dessinerimgHud(Texture2D road, Texture2D house, Texture2D elec, Texture2D eau){
+
+    DrawTexture(eau, 45, 515, WHITE);
+    DrawTexture(elec, 45, 415, WHITE);
+    DrawTexture(road, 45, 215, WHITE);
+    DrawTexture(house, 45, 315, WHITE);
+
+}
+
 void dessinerHUD(Rectangle HUD[NOMBRE_CASE_HUD]){
     for (int i = 0; i < NOMBRE_CASE_HUD; i++) {
         DrawRectangle((int)HUD[i].x, (int)HUD[i].y, (int)HUD[i].width, (int)HUD[i].height, BEIGE);
