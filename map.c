@@ -878,6 +878,8 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
     Texture2D road = LoadTexture("../images/Hud/road2.png");
     Texture2D house = LoadTexture("../images/Hud/house2.png");
 
+    //Music music = LoadMusicStream("resources/mini1111.xm");
+
     Rectangle HUD[NOMBRE_CASE_HUD];
     initialisationCaseHUD(HUD);
     Rectangle caseMAP = initialisationCaseMAP();

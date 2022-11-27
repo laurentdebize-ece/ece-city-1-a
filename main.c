@@ -17,6 +17,7 @@ int main(){
     initialisationInfo(&infoPerm);
 
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
+    //InitAudioDevice();
 
     SetTargetFPS(60);
 

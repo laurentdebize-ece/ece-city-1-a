@@ -83,9 +83,21 @@ void accueil(int *choixMode){
         DrawTexture(texture, 0, 0, WHITE);
         DrawText("ECE CITY", 320, 12, 70, BROWN);
 
-        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            modeJeu(choixMode);
-            fin = true;
+        DrawRectangle( 330, 300, 350,110, LIGHTGRAY );
+        DrawRectangleLines(330,300,350,110,WHITE);
+        DrawText("JOUER", 390, 320, 70, WHITE);
+
+        switch (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            case 0: {
+                if((X >= 330) && (X <= 680) && (Y <= 410) && (Y >= 300)){
+                    DrawRectangleLines(330,300,350,110,BROWN);
+                }
+            }break;
+            case 1: {
+                modeJeu(choixMode);
+                fin = true;
+            }break;
+
         }
         EndDrawing();
 
