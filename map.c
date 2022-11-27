@@ -621,6 +621,10 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                     map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
                     map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
                     map[i][j].habitation.evolution++;
+
+
+
+
                 }
                 for (int k = 0; k < 45; k++) {
                     for (int l = 0; l < 35; l++) {
@@ -719,16 +723,18 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
     }
 }
 
-void nombreHabitant(MAP map[45][35]){
+void nombreHabitant(MAP map[45][35],INFO *infoPerm){
     int habitantTotal = 0;
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if (map[i][j].habitation.id != 0){
-                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants;
+                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants/9 + 1;
         }
         }
     }
+
     map[0][0].nombreTotalHabitant = habitantTotal;
+    infoPerm->habitants = habitantTotal;
 }
 
 void test(MAP map[45][35]){
@@ -933,6 +939,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
                         map[i][j].route.visite = 0;
                     }
                 }
+                nombreHabitant(map,&infoPerm);
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                 viabiliteEau(map,tab_Graphe);
