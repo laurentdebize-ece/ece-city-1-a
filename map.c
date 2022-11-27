@@ -38,6 +38,8 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.connex = 0;
             map[i][j].habitation.viableElec = 0;
             map[i][j].habitation.viableEau = 0;
+            map[i][j].habitation.compteurEvolution = 0;
+            map[i][j].habitation.compteurArgent = 0;
 
             map[i][j].centrale.capacite = 5000; //test
             map[i][j].chateaueau.capacite = 5000;
@@ -613,10 +615,11 @@ void evolution(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.evolution < 4){
+                map[i][j].habitation.compteurArgent++;
                 map[i][j].habitation.compteurEvolution++;
-                if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturArgent && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniArgent){
+                if ((map[i][j].habitation.compteurArgent/60)==map[i][j].habitation.tempsFuturArgent && map[i][j].habitation.compteurArgent!=map[i][j].habitation.tempsBanniArgent){
                     map[i][j].habitation.tempsFuturArgent=map[i][j].habitation.tempsFuturArgent+15;
-                    map[i][j].habitation.tempsBanniArgent=map[i][j].habitation.compteurEvolution;
+                    map[i][j].habitation.tempsBanniArgent=map[i][j].habitation.compteurArgent;
 
                     infoPerm->ECEFlouz = infoPerm->ECEFlouz + map[i][j].habitation.nombreHabitants * 10;
                 }
@@ -643,7 +646,19 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                         }
                     }
                 }
-            }}
+            }
+                for (int k = 0; k < 45; k++) {
+                    for (int l = 0; l < 35; l++) {
+                        if (map[k][l].habitation.id == map[i][j].habitation.id){
+                            if (map[k][l].habitation.evolution < map[i][j].habitation.evolution){
+                                map[k][l].habitation.evolution = map[i][j].habitation.evolution;
+                                map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
+                            }
+
+                        }
+                    }
+                }
+            }
             if(map[i][j].habitation.evolution == 0){
                 map[i][j].habitation.nombreHabitants = 0;
             }
@@ -734,12 +749,12 @@ void nombreHabitant(MAP map[45][35],INFO *infoPerm){
     int habitantTotal = 0;
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id != 0){
-                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants/9 + 1;
+            if (map[i][j].habitation.id != 0 ){
+                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants;
         }
         }
     }
-
+    habitantTotal = habitantTotal/9;
     map[0][0].nombreTotalHabitant = habitantTotal;
     infoPerm->habitants = habitantTotal;
 }
