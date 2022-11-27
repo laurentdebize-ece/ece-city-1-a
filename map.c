@@ -638,6 +638,7 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
                     if (graphe->pSommet[s]->type == 2 && graphe->pSommet[s]->centrale.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
                         graphe->pSommet[s]->centrale.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
                         graphe->pSommet[s0]->habitation.viableElec = 1;
+                        map[i][j].habitation.viableElec = 1;
                         graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
                     }
                     arc = arc->arc_suivant;
@@ -648,18 +649,13 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
 }
 
 void testViabilite(Graphe *graphe, MAP map[45][35]){
-    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
-        if (graphe->pSommet[i]->habitation.viableElec){ //&& graphe->pSommet[i]->habitation.viableEau
-            graphe->pSommet[i]->habitation.viable = 1;
-            for (int j = 0; j < 35; j++) {
-                for (int k = 0; k < 45; k++) {
-                    if (map[k][j].habitation.id == i){
-                        map[k][j].habitation.viable = 1;
-                    }
-                }
-            }
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0;j<35;j++){
+        if (map[i][j].habitation.viableElec && map[i][j].habitation.viableEau){
+            map[i][j].habitation.viable = 1;
+
         }
-    }
+    }}
 }
 
 void dessinerimgHud(Texture2D road, Texture2D house, Texture2D elec, Texture2D eau){
@@ -751,6 +747,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
                 }
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
+                viabiliteEau(map,tab_Graphe);
                 viabiliteElectricite(graphe, map);
                 testViabilite(graphe, map);
                 break;
