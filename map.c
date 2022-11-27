@@ -614,12 +614,16 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
 void evolutionV2(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
+            map[i][j].habitation.compteurArgent++;
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.compteurArgent == 15){
+                infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
+                map[i][j].habitation.compteurArgent = 0;
+            }
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.viable == 1){
                 map[i][j].habitation.compteur++;
                 if(map[i][j].habitation.compteur == 15){
                     if (map[i][j].habitation.evolution < 4){map[i][j].habitation.evolution++;}
                     map[i][j].habitation.compteur = 0;
-                    infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
                 }
             }
             if(map[i][j].habitation.evolution == 0){
@@ -637,7 +641,19 @@ void evolutionV2(MAP map[45][35], INFO *infoPerm){
             if(map[i][j].habitation.evolution == 4){
                 map[i][j].habitation.nombreHabitants = 1000;
             }
+            for (int k = 0; k < 45; k++) {
+                for (int l = 0; l < 35; l++) {
+                    if (map[k][l].habitation.id == map[i][j].habitation.id){
+                        if (map[k][l].habitation.evolution < map[i][j].habitation.evolution){
+                            map[k][l].habitation.evolution = map[i][j].habitation.evolution;
+                            map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
+                        }
+
+                    }
+                }
+            }
         }
+
     }
 }
 
