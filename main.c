@@ -21,7 +21,7 @@ int main(){
     SetTargetFPS(60);
 
     //Fonction executé
-    accueil(&choixmode);
+    //accueil(&choixmode);
 
     mapECECITY(map, hud,infoPerm, choixmode);
 
