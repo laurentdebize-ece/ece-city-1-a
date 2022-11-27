@@ -17,12 +17,12 @@ int main(){
     initialisationInfo(&infoPerm);
 
     InitWindow(LARGUEUR, HAUTEUR, "ECE city");
+    //InitAudioDevice();
 
     SetTargetFPS(60);
 
     //Fonction executé
-    //accueil(&choixmode);
-
+    accueil(&choixmode);
     mapECECITY(map, hud,infoPerm, choixmode);
 
     for (int j=0;j<35;j++){
