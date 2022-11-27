@@ -834,7 +834,7 @@ void testViabilite(Graphe *graphe, MAP map[45][35]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++){
             if (map[i][j].habitation.viableElec == 1 && map[i][j].habitation.viableEau == 1){
-                printf("%d\n", map[i][j].habitation.id);
+                //printf("%d\n", map[i][j].habitation.id);
                 graphe->pSommet[i]->habitation.viable = 1;
                 map[i][j].habitation.viable = 1;
 
