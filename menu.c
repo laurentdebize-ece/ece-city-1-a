@@ -94,8 +94,10 @@ void accueil(int *choixMode){
                 }
             }break;
             case 1: {
-                modeJeu(choixMode);
-                fin = true;
+                if((X >= 330) && (X <= 680) && (Y <= 410) && (Y >= 300)) {
+                    modeJeu(choixMode);
+                    fin = true;
+                }
             }break;
 
         }
