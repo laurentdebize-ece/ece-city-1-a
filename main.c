@@ -23,10 +23,9 @@ int main(){
     SetTargetFPS(60);
 
     //Fonction executé
-    //accueil();
-    //modeJeu(&choixmode);
+    accueil(&choixmode);
 
-    mapECECITY(map, hud,element,infoPerm);
+    mapECECITY(map, hud,element,infoPerm, choixmode);
 
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){

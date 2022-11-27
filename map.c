@@ -19,7 +19,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].route.id = 0;
             map[i][j].route.visite = 0;
             map[i][j].route.color = BLACK;
-            map[i][j].habitation.viable = 0;
+            map[i][j].habitation.viable = 1;
             map[i][j].habitation.evolution = 0;
             map[i][j].habitation.tempsFuturEvolution = 5;
             map[i][j].habitation.tempsFuturArgent = 5;
@@ -589,7 +589,7 @@ void testViabilite(Graphe *graphe, MAP map[45][35]){
     }
 }
 
-void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBRE_MAX_ELEMENT], INFO infoPerm){
+void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBRE_MAX_ELEMENT], INFO infoPerm, int choixMode){
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
     initialiserTABGRAPHE(tab_Graphe);
 

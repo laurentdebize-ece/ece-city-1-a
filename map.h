@@ -46,7 +46,7 @@ typedef struct {
 
 void initialisationMap(MAP map[45][35]);
 
-void mapECECITY(MAP map[45][35], HUD hud[6],ELEMENT element[NOMBRE_MAX_ELEMENT],INFO infoPerm);
+void mapECECITY(MAP map[45][35], HUD hud[6],ELEMENT element[NOMBRE_MAX_ELEMENT],INFO infoPerm, int choixMode);
 
 
 

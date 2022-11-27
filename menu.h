@@ -2,6 +2,6 @@
 #define ECE_CITY_1_A_MENU_H
 
 void modeJeu(int * choixmode);
-void accueil();
+void accueil(int *choixMode);
 
 #endif //ECE_CITY_1_A_MENU_H

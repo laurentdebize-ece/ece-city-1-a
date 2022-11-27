@@ -1,30 +1,6 @@
 #include "menu.h"
 #include "raylib.h"
 
-void accueil(void){
-    bool fin;
-
-    Texture2D texture = LoadTexture("../images/Menu/accueil2.png");
-
-    while (!WindowShouldClose() && !fin)
-    {
-        BeginDrawing();
-
-        ClearBackground(RAYWHITE);
-        int X = GetMouseX();
-        int Y = GetMouseY();
-
-        DrawTexture(texture, 0, 0, WHITE);
-        DrawText("ECE CITY", 320, 12, 70, BROWN);
-
-        if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-            fin = true;
-        }
-        EndDrawing();
-
-    }
-    UnloadTexture(texture);
-}
 
 void modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
 {
@@ -57,7 +33,7 @@ void modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
         DrawText("CAPITALISTE", 615, 450, 40, YELLOW);
 
 
-        switch (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        switch (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             case 0: { // le boutton de la souris n'est pas enfoncé, on met en évidence la case
 
                 if ((X >= 100) && (X <= 450) && (Y <= 550) && (Y >= 400)){
@@ -87,5 +63,32 @@ void modeJeu(int * choixmode) // la fonction prendra en entrée : int *choixmode
         EndDrawing();
     }
 
+    UnloadTexture(texture);
+}
+
+
+void accueil(int *choixMode){
+    bool fin;
+
+    Texture2D texture = LoadTexture("../images/Menu/accueil2.png");
+
+    while (!WindowShouldClose() && !fin)
+    {
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+        int X = GetMouseX();
+        int Y = GetMouseY();
+
+        DrawTexture(texture, 0, 0, WHITE);
+        DrawText("ECE CITY", 320, 12, 70, BROWN);
+
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            modeJeu(choixMode);
+            fin = true;
+        }
+        EndDrawing();
+
+    }
     UnloadTexture(texture);
 }
