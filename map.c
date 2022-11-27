@@ -21,8 +21,8 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].route.color = BLACK;
             map[i][j].habitation.viable = 0;
             map[i][j].habitation.evolution = 0;
-            map[i][j].habitation.tempsFuturEvolution = 5;
-            map[i][j].habitation.tempsFuturArgent = 5;
+            map[i][j].habitation.tempsFuturEvolution = 15;
+            map[i][j].habitation.tempsFuturArgent = 15;
             map[i][j].habitation.nombreHabitants = 0;
             map[i][j].habitation.centraleQuiAlimente = 0;
             map[i][j].habitation.visite = 0;
@@ -464,7 +464,7 @@ void evolution(MAP map[45][35], INFO *infoPerm){
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.evolution < 4){
                 map[i][j].habitation.compteurEvolution++;
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturArgent && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniArgent){
-                    map[i][j].habitation.tempsFuturArgent=map[i][j].habitation.tempsFuturArgent+5;
+                    map[i][j].habitation.tempsFuturArgent=map[i][j].habitation.tempsFuturArgent+15;
                     map[i][j].habitation.tempsBanniArgent=map[i][j].habitation.compteurEvolution;
 
                     infoPerm->ECEFlouz = infoPerm->ECEFlouz + map[i][j].habitation.nombreHabitants * 10;
@@ -473,7 +473,7 @@ void evolution(MAP map[45][35], INFO *infoPerm){
 
 
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniEvolution){
-                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+5;
+                    map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
                     map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
                     map[i][j].habitation.evolution++;
                 }
