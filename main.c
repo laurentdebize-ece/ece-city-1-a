@@ -29,7 +29,7 @@ int main(){
 
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){
-            printf("%d", map[i][j].habitation.viableElec);
+            printf("%d", map[i][j].habitation.evolution);
         }
         printf("\n");
     }

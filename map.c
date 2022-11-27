@@ -635,7 +635,9 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                 if (map[i][j].habitation.viable == 1){
 
 
+
                 if ((map[i][j].habitation.compteurEvolution/60)==map[i][j].habitation.tempsFuturEvolution && map[i][j].habitation.compteurEvolution!=map[i][j].habitation.tempsBanniEvolution){
+
                     map[i][j].habitation.tempsFuturEvolution=map[i][j].habitation.tempsFuturEvolution+15;
                     map[i][j].habitation.tempsBanniEvolution=map[i][j].habitation.compteurEvolution;
                     map[i][j].habitation.evolution++;
@@ -742,7 +744,7 @@ void nombreHabitant(MAP map[45][35]){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if (map[i][j].habitation.id != 0){
-                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants/9;
+                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants;
         }
         }
     }
@@ -810,10 +812,10 @@ void viabEau(Graphe *graphe, MAP map[45][35]){
                     }
                     graphe->pSommet[s]->couleur = 1;
 
-                    if (graphe->pSommet[s]->type == 3 && graphe->pSommet[s]->centrale.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
-                        graphe->pSommet[s]->centrale.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
-                        graphe->pSommet[s0]->habitation.viableElec = 1;
-                        graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
+                    if (graphe->pSommet[s]->type == 3 && graphe->pSommet[s]->chateaueau.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
+                        graphe->pSommet[s]->chateaueau.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
+                        graphe->pSommet[s0]->habitation.viableEau = 1;
+                        map[i][j].habitation.viableEau = 1;
                     }
                     arc = arc->arc_suivant;
                 }
@@ -846,18 +848,16 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
 }
 
 void testViabilite(Graphe *graphe, MAP map[45][35]){
-    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
-        if (graphe->pSommet[i]->habitation.viableElec){ // && graphe->pSommet[i]->habitation.viableEau
+    for (int i = 0; i < 45; i++) {
+        for (int j = 0; j < 35; j++){
+        if (map[i][j].habitation.viableElec == 1 && map[i][j].habitation.viableEau == 1){
             graphe->pSommet[i]->habitation.viable = 1;
-            for (int j = 0; j < 35; j++) {
-                for (int k = 0; k < 45; k++) {
-                    if (map[k][j].habitation.id == i){
-                        map[k][j].habitation.viable = 1;
-                    }
-                }
-            }
+            map[i][j].habitation.viable = 1;
+
         }
-    }}
+
+    }
+    }
 }
 
 void dessinerimgHud(Texture2D road, Texture2D house, Texture2D elec, Texture2D eau){
@@ -945,7 +945,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
 
                 //Map
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
-                evolution(map,&infoPerm);
+
                 placementElement(mouseposition, caseMAP, map, &infoPerm, hud, element,graphe, tab_Graphe);
                 for (int i = 0; i < 45; i++) {
                     for (int j = 0; j < 35; j++) {
@@ -955,8 +955,10 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
                 }
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
+                viabiliteEau(map,tab_Graphe);
                 viabiliteElectricite(graphe, map);
                 testViabilite(graphe, map);
+                evolution(map,&infoPerm);
                 break;
             }
             case 1:{
