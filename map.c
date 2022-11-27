@@ -32,7 +32,9 @@ void initialisationMap(MAP map[45][35]){
             map[0][0].idChateauEau = 0;
             map[0][0].nombreTotalHabitant = 0;
             map[i][j].centrale.id = 0;
+            map[i][j].centrale.visite = 0;
             map[i][j].chateaueau.id = 0;
+            map[i][j].chateaueau.visite = 0;
             map[i][j].habitation.connex = 0;
             map[i][j].habitation.viableElec = 1;
             map[i][j].habitation.viableEau = 0;
@@ -548,12 +550,21 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
             if (map[i][j].route.id == 1 && niveauAffichage == 2){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, YELLOW);
             }
-            if(map[i][j].centrale.id != 0 && (niveauAffichage == 2 || niveauAffichage == 0)){
+            if(map[i][j].centrale.id != 0 && map[i][j].centrale.visite == 0 && (niveauAffichage == 2 || niveauAffichage == 0)){
                 DrawTexture(centrale, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
+                for (int k = 0; k < 4; k++) {
+                    for (int l = 0; l < 6; l++) {
+                        map[i + k][j + l].chateaueau.visite = 1;
+                    }
+                }
             }
-            if(map[i][j].chateaueau.id != 0 && (niveauAffichage == 1 || niveauAffichage == 0)){
-                DrawTexture(chateaudeau, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE );
-
+            if(map[i][j].chateaueau.id != 0 && map[i][j].chateaueau.visite == 0 && (niveauAffichage == 1 || niveauAffichage == 0)){
+                DrawTexture(chateaudeau, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
+                for (int k = 0; k < 4; k++) {
+                    for (int l = 0; l < 6; l++) {
+                        map[i + k][j + l].chateaueau.visite = 1;
+                    }
+                }
             }
         }
     }
@@ -757,6 +768,13 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                break;
+            }
+        }
+
+        for (int k = 0; k < 45; k++) {
+            for (int l = 0; l < 35; l++) {
+                map[k][l].chateaueau.visite = 0;
+                map[k][l].centrale.visite = 0;
             }
         }
 

@@ -22,6 +22,8 @@ typedef struct{
     int capacite;
     int quantiteDistribue;
 
+    int visite;
+
 }CENTRALE;
 
 
@@ -32,6 +34,8 @@ typedef struct{
     int positionY;
     int capacite;
     int quantiteDistribue;
+
+    int visite;
 
 }CHATEAUEAU;
 
