@@ -8,7 +8,7 @@
 #include "raylib.h"
 
 
-#define NOMBRE_CASE_HUD 4
+#define NOMBRE_CASE_HUD 7
 
 typedef struct{
     int etat;
