@@ -71,6 +71,8 @@ void initialiserGraphe(Graphe *g){
     g->taille = 0;
     for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
         g->pSommet[i]->type = 0;
+        g->pSommet[i]->habitation.viableEau = 0;
+        g->pSommet[i]->habitation.viableElec = 0;
     }
 }
 
@@ -387,7 +389,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
 
 
 
-void viabiliteEau(MAP map[45][35],TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]){
+void viabiliteEau(MAP map[45][35],TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE], Graphe *graphe){
     int s1[100];
     int s2[100];
     int valeur[100];
@@ -433,6 +435,7 @@ void viabiliteEau(MAP map[45][35],TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE]
                                 if(map[b][a].chateaueau.id == s2[i] && map[b][a].chateaueau.capacite>=map[k][j].habitation.nombreHabitants ){
                                     map[b][a].chateaueau.capacite = map[b][a].chateaueau.capacite - map[k][j].habitation.nombreHabitants;
                                     map[k][j].habitation.viableEau = 1;
+                                    graphe->pSommet[map[k][j].habitation.id]->habitation.viableEau = 1;
                                 }
                             }
                         }
@@ -828,8 +831,9 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
 
 void testViabilite(Graphe *graphe, MAP map[45][35]){
     for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
-        if (graphe->pSommet[i]->habitation.viableElec){ // && graphe->pSommet[i]->habitation.viableEau
+        if (graphe->pSommet[i]->habitation.viableElec){ //&& graphe->pSommet[i]->habitation.viableEau
             graphe->pSommet[i]->habitation.viable = 1;
+            //printf("%d est viable\n", graphe->pSommet[i]->habitation.id);
             for (int j = 0; j < 35; j++) {
                 for (int k = 0; k < 45; k++) {
                     if (map[k][j].habitation.id == i){
@@ -850,6 +854,15 @@ void dessinerimgHud(Texture2D road, Texture2D house, Texture2D elec, Texture2D e
 
 }
 
+void testRegression(MAP map[45][35], Graphe *graphe){
+    for (int j = 0; j < 35; j++) {
+        for (int i = 0; i < 45; i++) {
+            if (map[i][j].habitation.id != 0 && map[i][j].habitation.viable == 0 && map[i][j].habitation.evolution > 0){
+                map[i][j].habitation.evolution--;
+            }
+        }
+    }
+}
 
 void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int choixMode){
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
@@ -882,7 +895,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
     int niveauAffichage = 0;
 
-    float lifetime = 1.0f;
+    float lifetime = 15.0f;
     Timer timer = {0};
     StartTimer(&timer, lifetime);
 
@@ -901,6 +914,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
+            testRegression(map, graphe);
         }
         mouseposition = GetMousePosition();
 
@@ -936,8 +950,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
                 }
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
-                viabiliteElectricite(graphe, map);
-                testViabilite(graphe, map);
                 break;
             }
             case 1:{
@@ -955,6 +967,10 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
                break;
             }
         }
+
+        viabiliteElectricite(graphe, map);
+        viabiliteEau(map, tab_Graphe, graphe);
+        testViabilite(graphe, map);
 
         for (int k = 0; k < 45; k++) {
             for (int l = 0; l < 35; l++) {
