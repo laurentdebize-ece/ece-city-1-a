@@ -688,8 +688,8 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
 
             }
             if (map[i][j].route.id == 1 && niveauAffichage == 0){
-                //DrawTexture(route, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
-                DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, map[i][j].route.color);
+                DrawTexture(route, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
+                //DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, map[i][j].route.color);
             }
             if (map[i][j].route.id == 1 && niveauAffichage == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLUE);
@@ -882,7 +882,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
     Texture2D road = LoadTexture("../images/Hud/road2.png");
     Texture2D house = LoadTexture("../images/Hud/house2.png");
 
-    //Music music = LoadMusicStream("resources/mini1111.xm");
+    Music music = LoadMusicStream("../Audio/musique.mp3");
 
     Rectangle HUD[NOMBRE_CASE_HUD];
     initialisationCaseHUD(HUD);
@@ -896,11 +896,26 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
     Vector2 mouseposition = {0};
 
+    PlayMusicStream(music);
+
+    float timePlayed = 0.0f;
+    bool pause = false;
 
     //test(map);
 
     while(!WindowShouldClose()){
         infoPerm.time = GetTime();
+
+        UpdateMusicStream(music);
+
+        if (IsKeyPressed(KEY_P))
+        {
+            pause = !pause;
+
+            if (pause) PauseMusicStream(music);
+            else ResumeMusicStream(music);
+        }
+
 
         BeginDrawing();
         ClearBackground(WHITE);
@@ -987,6 +1002,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
             graphe_afficher(graphe);
         }
     }
+    UnloadMusicStream(music);
 
     UnloadTexture(terrain);
     UnloadTexture(cabane);
@@ -1002,6 +1018,8 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
     UnloadTexture(elec);
     UnloadTexture(road);
     UnloadTexture(house);
+
+    CloseAudioDevice();
 
     CloseWindow();
 /*
