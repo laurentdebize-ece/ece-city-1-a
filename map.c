@@ -606,11 +606,11 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
     Texture2D gratteciel;
     Texture2D fondmap;
 
-    terrain = LoadTexture("../images/Constructions /terrainvague2.png");
-    cabane = LoadTexture("../images/Constructions /cabane2.png");
-    maison = LoadTexture("../images/Constructions /maison2.png");
-    immeuble = LoadTexture("../images/Constructions /immeuble2.png");
-    gratteciel = LoadTexture("../images/Constructions /gratteciel2.png");
+    terrain = LoadTexture("../images/Constructions /terrain3.png");
+    cabane = LoadTexture("../images/Constructions /cabane3.png");
+    maison = LoadTexture("../images/Constructions /maison3.png");
+    immeuble = LoadTexture("../images/Constructions /immeuble3.png");
+    gratteciel = LoadTexture("../images/Constructions /gratteciel3.png");
     fondmap = LoadTexture("../images/Menu/fond.png");
 
     Rectangle HUD[NOMBRE_CASE_HUD];
@@ -696,11 +696,14 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         }
     }
 
-    UnloadTexture(fondmap);
+    UnloadTexture(terrain);
     UnloadTexture(cabane);
     UnloadTexture(maison);
     UnloadTexture(immeuble);
     UnloadTexture(gratteciel);
+
+    UnloadTexture(fondmap);
+
 
     CloseWindow();
 /*
