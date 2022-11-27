@@ -208,7 +208,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
         for (int i = 0; i < 45; i++) {
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.visite == 0){
                 for (int k = 0; k < 3; k++) {
-                    if ((i - 2)>=0 && (j - 2)<=45 && (i + 4)<=0 && (j + 4)>=35 &&map[i + k][j - 2].route.id == 1 && map[i + k][j - 2 + 1].route.id == 1){ //3 cases superieurs
+                    if ((i - 2)>=0 && (j - 2)<45 && (i + 4)<=0 && (j + 4)>35 &&map[i + k][j - 2].route.id == 1 && map[i + k][j - 2 + 1].route.id == 1){ //3 cases superieurs
 
                         map[i][j].habitation.connex = 1;
                         map[i + k][j - 2].route.visite = 1;
@@ -225,7 +225,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
 
                         parcourirRoute(map, i + k, j - 2, 2, map[i][j].habitation.id, g, tab_Graphe);
                     }
-                    if (map[i + k][j + 4].route.id == 1 && map[i + k][j + 4 - 1].route.id == 1){ //3 cases inférieur
+                    if ((i + k)>=0 && (j + 4)<45 && (i + k)<=0 && (j + 4)>35 && map[i + k][j + 4].route.id == 1 && map[i + k][j + 4 - 1].route.id == 1){ //3 cases inférieur
                         map[i][j].habitation.connex = 1;
 
                         map[i + k][j + 4].route.visite = 1;
@@ -260,7 +260,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
                         parcourirRoute(map, i - 2 , j + k, 2, map[i][j].habitation.id, g, tab_Graphe);
                     }
 
-                    if (map[i + 4][j + k].route.id == 1 && map[i + 4 - 1][j + k].route.id == 1){ //3 cases droite
+                    if ((i + 4) >= 0 && (i + 4) < 45 && (j + k) >= 0 && (j + k) < 35 &&map[i + 4][j + k].route.id == 1 && map[i + 4 - 1][j + k].route.id == 1){ //3 cases droite
                         map[i][j].habitation.connex = 1;
 
                         map[i + 4][j + k].route.visite = 1;
@@ -300,7 +300,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
                     }
                     parcourirRoute(map, i - 1, j - 1, 2, map[i][j].habitation.id, g, tab_Graphe);
                 }
-                if ((i + 3) <= 45 && (j + 3) <= 35 && map[i + 3][j + 3].route.id == 1 && (map[i + 3 - 1][j + 3].route.id == 1 || map[i + 3][j + 3 - 1].route.id == 1)){ //coins bas droite
+                if ((i + 3) < 45 && (j + 3) < 35 && map[i + 3][j + 3].route.id == 1 && (map[i + 3 - 1][j + 3].route.id == 1 || map[i + 3][j + 3 - 1].route.id == 1)){ //coins bas droite
                     map[i][j].habitation.connex = 1;
 
                     map[i + 3][j + 3].route.visite = 1;
@@ -344,7 +344,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
                     }
                     parcourirRoute(map, i - 1, j + 3, 2, map[i][j].habitation.id, g, tab_Graphe);
                 }
-                if ((i + 3) <= 45 && (j - 1) > 0 && map[i + 3][j - 1].route.id == 1 && (map[i + 3][j].route.id == 1 || map[i + 3 - 1][j - 1].route.id == 1)){ //coins haut droite
+                if ((i + 3) < 45 && (j - 1) > 0 && map[i + 3][j - 1].route.id == 1 && (map[i + 3][j].route.id == 1 || map[i + 3 - 1][j - 1].route.id == 1)){ //coins haut droite
                     map[i][j].habitation.connex = 1;
 
                     map[i + 3][j - 1].route.visite = 1;
@@ -611,13 +611,14 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
     }
 }
 
-void evolutionV2(MAP map[45][35], INFO *infoPerm){
+void evolutionV2(MAP map[45][35], INFO *infoPerm, int modeJeu){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id != 0 && map[i][j].habitation.viable == 1){
+            if (map[i][j].habitation.id != 0 && (map[i][j].habitation.viable == 1 || modeJeu == 2)){
                 map[i][j].habitation.compteur++;
                 if(map[i][j].habitation.compteur == 15){
-                    if (map[i][j].habitation.evolution < 4){map[i][j].habitation.evolution++;}
+                    if (map[i][j].habitation.evolution < 4){map[i][j].habitation.evolution++;
+                        printf("%d", map[i][j].habitation.evolution);}
                     map[i][j].habitation.compteur = 0;
                     infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
                 }
@@ -641,7 +642,7 @@ void evolutionV2(MAP map[45][35], INFO *infoPerm){
     }
 }
 
-void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Texture2D immeuble, Texture2D gratteciel, Texture2D terrain, Texture2D route,Texture2D chateaudeau, Texture2D centrale, int niveauAffichage){
+void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Texture2D immeuble, Texture2D gratteciel, Texture2D terrain, Texture2D route,Texture2D chateaudeau, Texture2D centrale, int niveauAffichage, Graphe *graphe){
 
     for (int j = 0; j < 35; j++) {
         for (int i = 0; i < 45; i++) {
@@ -701,7 +702,7 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
                         map[i + k][j + l].chateaueau.visite = 1;
                     }
                 }
-                DrawText(TextFormat("%d/%d", map[i][j].chateaueau.quantiteDistribue,map[i][j].chateaueau.capacite), POSITIONMAP_X + i * LARGEUR1CASE + 15,POSITIONMAP_Y + j * LARGEUR1CASE -20, 15, SKYBLUE);
+                DrawText(TextFormat("%d/%d",graphe->pSommet[map[i][j].centrale.id]->centrale.quantiteDistribue,map[i][j].chateaueau.capacite), POSITIONMAP_X + i * LARGEUR1CASE + 15,POSITIONMAP_Y + j * LARGEUR1CASE -20, 15, SKYBLUE);
             }
         }
     }
@@ -807,6 +808,7 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
                     if (graphe->pSommet[s]->type == 2 && graphe->pSommet[s]->centrale.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
                         graphe->pSommet[s]->centrale.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
                         graphe->pSommet[s0]->habitation.viableElec = 1;
+                        graphe->pSommet[s]->centrale.quantiteDistribue = graphe->pSommet[s0]->habitation.nombreHabitants;
                         map[i][j].habitation.viableElec = 1;
                         graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
                     }
@@ -890,7 +892,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
 
         if (TimerDone(timer)){ //Fonction execute toute les 1 seconde
             StartTimer(&timer, lifetime);
-            evolutionV2(map, &infoPerm);
+            evolutionV2(map, &infoPerm, choixMode);
         }
         mouseposition = GetMousePosition();
 
@@ -923,20 +925,20 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], INFO infoPerm, int ch
                         map[i][j].route.visite = 0;
                     }
                 }
-                nombreHabitant(map,&infoPerm);
-                dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
+                //nombreHabitant(map,&infoPerm);
+                dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage, graphe); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                 break;
             }
             case 1:{
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
-                dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
+                dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage, graphe); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                 break;
             }
             case 2:{
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
-                dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
+                dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage,graphe); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
                break;
             }
