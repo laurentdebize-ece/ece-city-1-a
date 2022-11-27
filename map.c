@@ -673,10 +673,10 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
     Texture2D chateaudeau = LoadTexture("../images/Constructions /chateaudeau.png");
     Texture2D centrale = LoadTexture("../images/Constructions / centrale.png");
 
-    Texture2D eau = LoadTexture("../images/Hud/eau.png");
-    Texture2D elec = LoadTexture("../images/Hud/elec.png");
-    Texture2D road = LoadTexture("../images/Hud/road.png");
-    Texture2D house = LoadTexture("../images/Hud/house.png");
+    Texture2D eau = LoadTexture("../images/Hud/eau2.png");
+    Texture2D elec = LoadTexture("../images/Hud/elec2.png");
+    Texture2D road = LoadTexture("../images/Hud/road2.png");
+    Texture2D house = LoadTexture("../images/Hud/house2.png");
 
 
     TAB_GRAPHE tab_Graphe[NOMBRE_ARETES_TABGRAPHE];
@@ -716,7 +716,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         }
         mouseposition = GetMousePosition();
 
-
         dessinerHUD(HUD); //Dessine les cases de la boite à outil
         HUDcollision(hud, HUD, mouseposition, &niveauAffichage); //Test si surpassage de case et si clic dans une des cases
 
@@ -725,6 +724,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
         //nombreHabitant(map);
         //connexRoute(map, graphe, tab_Graphe);
         lireGraphe(tab_Graphe, graphe);
+
         switch (niveauAffichage) {
             case 0:{
                 connexRoute(map, graphe, tab_Graphe);
@@ -762,6 +762,8 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
             }
         }
 
+
+
         //nombreHabitant(map);
 
         EndDrawing();
@@ -790,8 +792,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
     UnloadTexture(elec);
     UnloadTexture(road);
     UnloadTexture(house);
-
-
 
     CloseWindow();
 /*
