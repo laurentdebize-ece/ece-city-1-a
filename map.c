@@ -36,7 +36,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].chateaueau.id = 0;
             map[i][j].chateaueau.visite = 0;
             map[i][j].habitation.connex = 0;
-            map[i][j].habitation.viableElec = 1;
+            map[i][j].habitation.viableElec = 0;
             map[i][j].habitation.viableEau = 0;
 
         }
@@ -200,6 +200,169 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
     for (int j = 0; j < 35; j++) {
         for (int i = 0; i < 45; i++) {
             if (map[i][j].habitation.id != 0 && map[i][j].habitation.visite == 0){
+                for (int k = 0; k < 3; k++) {
+                    if (map[i + k][j - 2].route.id == 1 && map[i + k][j - 2 + 1].route.id == 1){ //3 cases superieurs
+                        map[i][j].habitation.connex = 1;
+
+                        map[i + k][j - 2].route.visite = 1;
+                        map[i + k][j - 2 + 1].route.visite = 1;
+
+                        map[i + k][j - 2].route.color = ORANGE;
+                        map[i + k][j - 2 + 1].route.color = ORANGE;
+
+                        for (int l = 0; l < 3; l++) {
+                            for (int m = 0; m < 3; m++) {
+                                map[i + l][j + m].habitation.visite = 1;
+                            }
+                        }
+
+                        parcourirRoute(map, i + k, j - 2, 2, map[i][j].habitation.id, g, tab_Graphe);
+                    }
+                    if (map[i + k][j + 4].route.id == 1 && map[i + k][j + 4 - 1].route.id == 1){ //3 cases inférieur
+                        map[i][j].habitation.connex = 1;
+
+                        map[i + k][j + 4].route.visite = 1;
+                        map[i + k][j + 4 - 1].route.visite = 1;
+
+                        map[i + k][j + 4].route.color = ORANGE;
+                        map[i + k][j + 4 - 1].route.color = ORANGE;
+
+                        for (int l = 0; l < 3; l++) {
+                            for (int m = 0; m < 3; m++) {
+                                map[i + l][j + m].habitation.visite = 1;
+                            }
+                        }
+
+                        parcourirRoute(map, i + k, j + 4, 2, map[i][j].habitation.id, g, tab_Graphe);
+                    }
+                    if (map[i - 2][j + k].route.id == 1 && map[i - 2 + 1][j + k].route.id == 1){ //3 cases gauche
+                        map[i][j].habitation.connex = 1;
+
+                        map[i - 2 + 1][j + k].route.visite = 1;
+                        map[i - 2 + 1][j + k].route.visite = 1;
+
+                        map[i - 2][j + k].route.color = ORANGE;
+                        map[i - 2 + 1][j + k].route.color = ORANGE;
+
+                        for (int l = 0; l < 3; l++) {
+                            for (int m = 0; m < 3; m++) {
+                                map[i + l][j + m].habitation.visite = 1;
+                            }
+                        }
+
+                        parcourirRoute(map, i - 2 , j + k, 2, map[i][j].habitation.id, g, tab_Graphe);
+                    }
+
+                    if (map[i + 4][j + k].route.id == 1 && map[i + 4 - 1][j + k].route.id == 1){ //3 cases droite
+                        map[i][j].habitation.connex = 1;
+
+                        map[i + 4][j + k].route.visite = 1;
+                        map[i + 4 - 1][j + k].route.visite = 1;
+
+                        map[i + 4][j + k].route.color = ORANGE;
+                        map[i + 4 - 1][j + k].route.color = ORANGE;
+
+                        for (int l = 0; l < 3; l++) {
+                            for (int m = 0; m < 3; m++) {
+                                map[i + l][j + m].habitation.visite = 1;
+                            }
+                        }
+
+                        parcourirRoute(map, i + 4, j + k, 2, map[i][j].habitation.id, g, tab_Graphe);
+                    }
+                }
+                if ((i - 1) > 0 && (j - 1) > 0 && map[i - 1][j - 1].route.id == 1 && (map[i][j - 1].route.id == 1 || map[i - 1][j].route.id == 1)){ //coins haut gauche
+                    map[i][j].habitation.connex = 1;
+
+                    map[i - 1][j - 1].route.visite = 1;
+                    map[i - 1][j - 1].route.color = ORANGE;
+                    map[i][j - 1].route.visite = 1;
+                    map[i - 1][j].route.visite = 1;
+
+                    if(map[i][j - 1].route.id == 1){
+                        map[i][j - 1].route.color = ORANGE;
+                    }
+                    else if(map[i - 1][j].route.id == 1){
+                        map[i - 1][j].route.color = ORANGE;
+                    }
+
+                    for (int l = 0; l < 3; l++) {
+                        for (int m = 0; m < 3; m++) {
+                            map[i + l][j + m].habitation.visite = 1;
+                        }
+                    }
+                    parcourirRoute(map, i - 1, j - 1, 2, map[i][j].habitation.id, g, tab_Graphe);
+                }
+                if ((i + 3) < 45 && (j + 3) < 35 && map[i + 3][j + 3].route.id == 1 && (map[i + 3 - 1][j + 3].route.id == 1 || map[i + 3][j + 3 - 1].route.id == 1)){ //coins bas droite
+                    map[i][j].habitation.connex = 1;
+
+                    map[i + 3][j + 3].route.visite = 1;
+                    map[i + 3][j + 3].route.color = ORANGE;
+                    map[i + 3][j + 3 - 1].route.visite = 1;
+                    map[i + 3 - 1][j + 3].route.visite = 1;
+
+                    if(map[i + 3][j + 3 - 1].route.id == 1){
+                        map[i + 3][j + 3 - 1].route.color = ORANGE;
+                    }
+                    else if(map[i + 3 - 1][j + 3].route.id == 1){
+                        map[i + 3 - 1][j + 3].route.color = ORANGE;
+                    }
+
+                    for (int l = 0; l < 3; l++) {
+                        for (int m = 0; m < 3; m++) {
+                            map[i + l][j + m].habitation.visite = 1;
+                        }
+                    }
+                    parcourirRoute(map, i + 3, j + 3, 2, map[i][j].habitation.id, g, tab_Graphe);
+                }
+                if ((i - 1) > 0 && (j + 3) < 35 && map[i - 1][j + 3].route.id == 1 && (map[i][j + 3].route.id == 1 || map[i - 1][j + 3 - 1].route.id == 1)){ //coins bas gauche
+                    map[i][j].habitation.connex = 1;
+
+                    map[i - 1][j + 3].route.visite = 1;
+                    map[i - 1][j + 3].route.color = ORANGE;
+                    map[i - 1][j + 3 - 1].route.visite = 1;
+                    map[i][j + 3].route.visite = 1;
+
+                    if(map[i - 1][j + 3 - 1].route.id == 1){
+                        map[i - 1][j + 3 - 1].route.color = ORANGE;
+                    }
+                    else if(map[i][j + 3].route.id == 1){
+                        map[i][j + 3].route.color = ORANGE;
+                    }
+
+                    for (int l = 0; l < 3; l++) {
+                        for (int m = 0; m < 3; m++) {
+                            map[i + l][j + m].habitation.visite = 1;
+                        }
+                    }
+                    parcourirRoute(map, i - 1, j + 3, 2, map[i][j].habitation.id, g, tab_Graphe);
+                }
+                if ((i + 3) < 45 && (j - 1) > 0 && map[i + 3][j - 1].route.id == 1 && (map[i + 3][j].route.id == 1 || map[i + 3 - 1][j - 1].route.id == 1)){ //coins haut droite
+                    map[i][j].habitation.connex = 1;
+
+                    map[i + 3][j - 1].route.visite = 1;
+                    map[i + 3][j - 1].route.color = ORANGE;
+                    map[i + 3][j].route.visite = 1;
+                    map[i + 3 - 1][j - 1].route.visite = 1;
+
+                    if(map[i + 3][j].route.id == 1){
+                        map[i + 3][j].route.color = ORANGE;
+                    }
+                    else if(map[i + 3 - 1][j - 1].route.id == 1){
+                        map[i + 3 - 1][j - 1].route.color = ORANGE;
+                    }
+
+                    for (int l = 0; l < 3; l++) {
+                        for (int m = 0; m < 3; m++) {
+                            map[i + l][j + m].habitation.visite = 1;
+                        }
+                    }
+                    parcourirRoute(map, i + 3, j - 1, 2, map[i][j].habitation.id, g, tab_Graphe);
+                }
+
+
+
+                /*
                 for (int k = -1; k < 2; k++) {
                     for (int l = -1; l < 2; l++) {
                         if (map[i + l][j + k].route.id == 1 && validationParcourContourMaison(k,l)){
@@ -216,7 +379,7 @@ void connexRoute(MAP map[45][35], Graphe *g, TAB_GRAPHE tab_Graphe[NOMBRE_ARETES
                         }
                     }
                 }
-
+*/
             }
         }
     }
@@ -512,8 +675,8 @@ void evolution(MAP map[45][35], INFO *infoPerm){
 void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Texture2D immeuble, Texture2D gratteciel, Texture2D terrain, Texture2D route,Texture2D chateaudeau, Texture2D centrale, int niveauAffichage){
 
 
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
+    for (int j = 0; j < 35; j++) {
+        for (int i = 0; i < 45; i++) {
             if(map[i][j].type == Habitation){
                 if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
                     DrawTexture(terrain, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
@@ -542,7 +705,8 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
 
             }
             if (map[i][j].route.id == 1 && niveauAffichage == 0){
-                DrawTexture(route, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
+                //DrawTexture(route, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
+                DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, map[i][j].route.color);
             }
             if (map[i][j].route.id == 1 && niveauAffichage == 1){
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, BLUE);
@@ -551,14 +715,17 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, YELLOW);
             }
             if(map[i][j].centrale.id != 0 && map[i][j].centrale.visite == 0 && (niveauAffichage == 2 || niveauAffichage == 0)){
+
+                DrawRectangleLines(POSITIONMAP_X + i * LARGEUR1CASE,POSITIONMAP_Y + j * LARGEUR1CASE, 4 * LARGEUR1CASE, 6 * LARGEUR1CASE, YELLOW);
                 DrawTexture(centrale, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
                 for (int k = 0; k < 4; k++) {
                     for (int l = 0; l < 6; l++) {
-                        map[i + k][j + l].chateaueau.visite = 1;
+                        map[i + k][j + l].centrale.visite = 1;
                     }
                 }
             }
             if(map[i][j].chateaueau.id != 0 && map[i][j].chateaueau.visite == 0 && (niveauAffichage == 1 || niveauAffichage == 0)){
+                DrawRectangleLines(POSITIONMAP_X + i * LARGEUR1CASE,POSITIONMAP_Y + j * LARGEUR1CASE, 4 * LARGEUR1CASE, 6 * LARGEUR1CASE, SKYBLUE);
                 DrawTexture(chateaudeau, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
                 for (int k = 0; k < 4; k++) {
                     for (int l = 0; l < 6; l++) {
@@ -625,6 +792,36 @@ void test(MAP map[45][35]){
 */
 }
 
+void viabEau(Graphe *graphe, MAP map[45][35]){
+    int s0;
+    for (int j = 0; j < 35; j++) {
+        for (int i = 0; i < 45; i++) {
+            s0 = map[i][j].habitation.id;
+            if (s0 != 0){
+                struct Arc *arc = graphe->pSommet[s0]->arc;
+                while (arc != NULL && !(graphe->pSommet[s0]->habitation.viableEau)){
+                    int s = arc->sommet;
+
+                    if (arc->arc_suivant == NULL){ //si plus arc on conserve s comme plus cours chemin
+                        break;
+                    }
+                    else if(graphe->pSommet[s]->arc->valeur > graphe->pSommet[arc->arc_suivant->sommet]->arc->valeur && graphe->pSommet[s]->couleur == 0 && graphe->pSommet[arc->arc_suivant->sommet]->couleur == 0){
+                        s = arc->arc_suivant->sommet;
+                    }
+                    graphe->pSommet[s]->couleur = 1;
+
+                    if (graphe->pSommet[s]->type == 3 && graphe->pSommet[s]->centrale.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
+                        graphe->pSommet[s]->centrale.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
+                        graphe->pSommet[s0]->habitation.viableElec = 1;
+                        graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
+                    }
+                    arc = arc->arc_suivant;
+                }
+            }
+        }
+    }
+}
+
 void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
     int s0;
     for (int j = 0; j < 35; j++) {
@@ -649,11 +846,16 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
 }
 
 void testViabilite(Graphe *graphe, MAP map[45][35]){
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0;j<35;j++){
-        if (map[i][j].habitation.viableElec && map[i][j].habitation.viableEau){
-            map[i][j].habitation.viable = 1;
-
+    for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
+        if (graphe->pSommet[i]->habitation.viableElec){ // && graphe->pSommet[i]->habitation.viableEau
+            graphe->pSommet[i]->habitation.viable = 1;
+            for (int j = 0; j < 35; j++) {
+                for (int k = 0; k < 45; k++) {
+                    if (map[k][j].habitation.id == i){
+                        map[k][j].habitation.viable = 1;
+                    }
+                }
+            }
         }
     }}
 }
@@ -732,8 +934,14 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
 
         switch (niveauAffichage) {
             case 0:{
+                for (int m = 0; m < 45; m++) {
+                    for (int n = 0; n < 35; n++) {
+                        map[m][n].route.visite = 0;
+                        map[m][n].route.color = BLACK;
+                    }
+                }
                 connexRoute(map, graphe, tab_Graphe);
-                lireGraphe(tab_Graphe, graphe);
+
 
                 //Map
                 dessinerMap(mapPosition); //Dessine le fond de map (possibilité de changer la texture de la map)
@@ -747,7 +955,6 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
                 }
                 dessinerElement(map,cabane,maison,immeuble,gratteciel,terrain,route, chateaudeau, centrale, niveauAffichage); //Dessine toutes les maisons enregistrées en mémoire
                 affichageInfo(&infoPerm); //Affichage informations de la partie
-                viabiliteEau(map,tab_Graphe);
                 viabiliteElectricite(graphe, map);
                 testViabilite(graphe, map);
                 break;
