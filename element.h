@@ -52,6 +52,7 @@ typedef struct{
 
     float tempsBanniEvolution;
     float compteurEvolution;
+    float compteurArgent;
     float tempsFuturEvolution;
     float tempsBanniArgent;
     float tempsFuturArgent;
