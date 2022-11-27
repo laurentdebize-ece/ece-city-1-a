@@ -21,13 +21,13 @@ int main(){
     SetTargetFPS(60);
 
     //Fonction executé
-    accueil(&choixmode);
+    //accueil(&choixmode);
 
     mapECECITY(map, hud,infoPerm, choixmode);
 
     for (int j=0;j<35;j++){
         for(int i=0;i<45;i++){
-            printf("%d", map[i][j].habitation.viableEau);
+            printf("%d", map[i][j].habitation.evolution);
         }
         printf("\n");
     }
