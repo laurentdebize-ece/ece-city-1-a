@@ -39,7 +39,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].habitation.viableElec = 0;
             map[i][j].habitation.viableEau = 0;
 
-            map[i][j].centrale.capacite = 5000;
+            map[i][j].centrale.capacite = 5000; //test
             map[i][j].chateaueau.capacite = 5000;
 
         }
@@ -706,6 +706,7 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
                         map[i + k][j + l].centrale.visite = 1;
                     }
                 }
+                //quantite distribuée en fonction de la capacité
                 DrawText(TextFormat("%d/%d", map[i][j].centrale.quantiteDistribue,map[i][j].centrale.capacite), POSITIONMAP_X + i * LARGEUR1CASE + 15,POSITIONMAP_Y + j * LARGEUR1CASE -20, 15, YELLOW);
             }
             if(map[i][j].chateaueau.id != 0 && map[i][j].chateaueau.visite == 0 && (niveauAffichage == 1 || niveauAffichage == 0)){

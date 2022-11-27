@@ -18,7 +18,6 @@ typedef struct{
     int positionY;
     int capacite;
     int quantiteDistribue;
-
     int visite;
 
 }CENTRALE;
