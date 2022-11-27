@@ -671,7 +671,7 @@ void mapECECITY(MAP map[45][35], HUD hud[NOMBRE_CASE_HUD], ELEMENT element[NOMBR
     Texture2D fondmap = LoadTexture("../images/Menu/fond.png");
     Texture2D route = LoadTexture("../images/Constructions /route.png");
     Texture2D chateaudeau = LoadTexture("../images/Constructions /chateaudeau.png");
-    Texture2D centrale = LoadTexture("../images/Constructions / centrale.png");
+    Texture2D centrale = LoadTexture("../images/Constructions /centrale .png");
 
     Texture2D eau = LoadTexture("../images/Hud/eau2.png");
     Texture2D elec = LoadTexture("../images/Hud/elec2.png");
