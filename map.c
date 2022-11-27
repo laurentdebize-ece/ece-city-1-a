@@ -607,17 +607,6 @@ void placementElement(Vector2 mouseposition, Rectangle caseMAP, MAP map[45][35],
     }
 }
 
-void impots(MAP map[45][35], INFO *infoPerm){
-
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
-            if (map[i][j].habitation.id != 0 && map[i][j].habitation.compteurEvolution/60 == 15){
-                infoPerm->ECEFlouz = infoPerm->ECEFlouz + (float)map[i][j].habitation.nombreHabitants * 10;
-            }
-        }
-    }
-}
-
 void evolutionV2(MAP map[45][35], INFO *infoPerm){
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
@@ -673,6 +662,7 @@ void evolution(MAP map[45][35], INFO *infoPerm){
                                     map[k][l].habitation.compteurEvolution = map[i][j].habitation.compteurEvolution;
                                 }
                             }
+
                         }
                     }
                 }
@@ -763,16 +753,18 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
     }
 }
 
-void nombreHabitant(MAP map[45][35]){
+void nombreHabitant(MAP map[45][35],INFO *infoPerm){
     int habitantTotal = 0;
     for (int i = 0; i < 45; i++) {
         for (int j = 0; j < 35; j++) {
             if (map[i][j].habitation.id != 0){
-                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants;
+                habitantTotal = habitantTotal + map[i][j].habitation.nombreHabitants/9 + 1;
         }
         }
     }
+
     map[0][0].nombreTotalHabitant = habitantTotal;
+    infoPerm->habitants = habitantTotal;
 }
 
 void test(MAP map[45][35]){
