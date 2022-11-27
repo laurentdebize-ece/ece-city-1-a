@@ -36,7 +36,7 @@ void initialisationMap(MAP map[45][35]){
             map[i][j].chateaueau.id = 0;
             map[i][j].chateaueau.visite = 0;
             map[i][j].habitation.connex = 0;
-            map[i][j].habitation.viableElec = 1;
+            map[i][j].habitation.viableElec = 0;
             map[i][j].habitation.viableEau = 0;
 
         }
@@ -512,8 +512,8 @@ void evolution(MAP map[45][35], INFO *infoPerm){
 void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Texture2D immeuble, Texture2D gratteciel, Texture2D terrain, Texture2D route,Texture2D chateaudeau, Texture2D centrale, int niveauAffichage){
 
 
-    for (int i = 0; i < 45; i++) {
-        for (int j = 0; j < 35; j++) {
+    for (int j = 0; j < 35; j++) {
+        for (int i = 0; i < 45; i++) {
             if(map[i][j].type == Habitation){
                 if (map[i][j].habitation.evolution==TERRAIN_VAGUE){
                     DrawTexture(terrain, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j *  LARGEUR1CASE, WHITE);
@@ -551,14 +551,17 @@ void dessinerElement(MAP map[45][35], Texture2D cabane, Texture2D maison, Textur
                 DrawRectangle(POSITIONMAP_X + i * LARGEUR1CASE, POSITIONMAP_Y + j * LARGEUR1CASE, LARGEUR1CASE, LARGEUR1CASE, YELLOW);
             }
             if(map[i][j].centrale.id != 0 && map[i][j].centrale.visite == 0 && (niveauAffichage == 2 || niveauAffichage == 0)){
+
+                DrawRectangleLines(POSITIONMAP_X + i * LARGEUR1CASE,POSITIONMAP_Y + j * LARGEUR1CASE, 4 * LARGEUR1CASE, 6 * LARGEUR1CASE, YELLOW);
                 DrawTexture(centrale, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
                 for (int k = 0; k < 4; k++) {
                     for (int l = 0; l < 6; l++) {
-                        map[i + k][j + l].chateaueau.visite = 1;
+                        map[i + k][j + l].centrale.visite = 1;
                     }
                 }
             }
             if(map[i][j].chateaueau.id != 0 && map[i][j].chateaueau.visite == 0 && (niveauAffichage == 1 || niveauAffichage == 0)){
+                DrawRectangleLines(POSITIONMAP_X + i * LARGEUR1CASE,POSITIONMAP_Y + j * LARGEUR1CASE, 4 * LARGEUR1CASE, 6 * LARGEUR1CASE, SKYBLUE);
                 DrawTexture(chateaudeau, POSITIONMAP_X + i * LARGEUR1CASE , POSITIONMAP_Y + j * LARGEUR1CASE, WHITE);
                 for (int k = 0; k < 4; k++) {
                     for (int l = 0; l < 6; l++) {
@@ -625,6 +628,36 @@ void test(MAP map[45][35]){
 */
 }
 
+void viabEau(Graphe *graphe, MAP map[45][35]){
+    int s0;
+    for (int j = 0; j < 35; j++) {
+        for (int i = 0; i < 45; i++) {
+            s0 = map[i][j].habitation.id;
+            if (s0 != 0){
+                struct Arc *arc = graphe->pSommet[s0]->arc;
+                while (arc != NULL && !(graphe->pSommet[s0]->habitation.viableEau)){
+                    int s = arc->sommet;
+
+                    if (arc->arc_suivant == NULL){ //si plus arc on conserve s comme plus cours chemin
+                        break;
+                    }
+                    else if(graphe->pSommet[s]->arc->valeur > graphe->pSommet[arc->arc_suivant->sommet]->arc->valeur && graphe->pSommet[s]->couleur == 0 && graphe->pSommet[arc->arc_suivant->sommet]->couleur == 0){
+                        s = arc->arc_suivant->sommet;
+                    }
+                    graphe->pSommet[s]->couleur = 1;
+
+                    if (graphe->pSommet[s]->type == 3 && graphe->pSommet[s]->centrale.capacite >= graphe->pSommet[s0]->habitation.nombreHabitants){
+                        graphe->pSommet[s]->centrale.capacite -= graphe->pSommet[s0]->habitation.nombreHabitants;
+                        graphe->pSommet[s0]->habitation.viableElec = 1;
+                        graphe->pSommet[s0]->habitation.centraleQuiAlimente = s;
+                    }
+                    arc = arc->arc_suivant;
+                }
+            }
+        }
+    }
+}
+
 void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
     int s0;
     for (int j = 0; j < 35; j++) {
@@ -649,7 +682,7 @@ void viabiliteElectricite(Graphe *graphe, MAP map[45][35]){
 
 void testViabilite(Graphe *graphe, MAP map[45][35]){
     for (int i = 0; i < NOMBRE_MAX_ELEMENT; i++) {
-        if (graphe->pSommet[i]->habitation.viableElec){ //&& graphe->pSommet[i]->habitation.viableEau
+        if (graphe->pSommet[i]->habitation.viableElec){ // && graphe->pSommet[i]->habitation.viableEau
             graphe->pSommet[i]->habitation.viable = 1;
             for (int j = 0; j < 35; j++) {
                 for (int k = 0; k < 45; k++) {
