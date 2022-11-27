@@ -46,4 +46,17 @@ void dessinerHUD(Rectangle HUD[NOMBRE_CASE_HUD]){
         DrawRectangle((int)HUD[i].x, (int)HUD[i].y, (int)HUD[i].width, (int)HUD[i].height, BEIGE);
         DrawRectangleLines((int)HUD[i].x, (int)HUD[i].y, (int)HUD[i].width, (int)HUD[i].height, BLACK);
     }
+
+    DrawRectangleGradientH( 895,  250, 100,  100, BEIGE, BROWN);
+    DrawRectangleLines(895, 250, 100, 100, WHITE);
+    DrawText("0", 925, 265, 80, WHITE);
+
+    DrawRectangleGradientH(895, 350, 100, 100,BEIGE, BROWN);
+    DrawRectangleLines(895, 350, 100, 100, WHITE );
+    DrawText("-1", 910, 365, 70, WHITE);
+
+    DrawRectangleGradientH(895, 450, 100, 100,BEIGE, BROWN);
+    DrawRectangleLines(895, 450, 100, 100, WHITE);
+    DrawText("-2", 905, 465, 70, WHITE);
+
 }
